@@ -11,39 +11,47 @@ import { dsDevice } from '../types/dsDevice';
 import { SelectID } from '../components/SelectID';
 import { handleSelectId } from '../lib/handleSelectID';
 import { Lamp } from '../device/Lamp';
+import { MultiSelectTable } from '../components/MultiSelectTable';
+import { Sensor } from '../device/Sensor';
 
 //const deviceTypeOptions: { value: string; title: string }[] = [
 const deviceTypeOptions = [
     {
         label: 'Select Device type',
         disabled: true,
+        value: 'selectDevice',
     },
     {
         label: 'lamp',
+        value: 'lamp',
     },
-    // {
-    //     label: 'rgbLamp',
-    // },
     {
         label: 'sensor',
+        value: 'sensor',
     },
     {
         label: 'presenceSensor',
+        value: 'presenceSensor',
     },
     {
         label: 'smokeAlarm',
+        value: 'smokeAlarm',
     },
     {
         label: 'button',
+        value: 'button',
     },
     {
         label: 'doorbell',
+        value: 'doorbell',
     },
     {
         label: 'multiSensor',
+        value: 'multiSensor',
     },
     {
         label: 'awayButton',
+        value: 'awayButton',
     },
 ];
 
@@ -68,7 +76,7 @@ export const SelectDeviceType = (): JSX.Element => {
                 <MenuItem
                     disabled={deviceTypeOptions[key].disabled}
                     key={key + deviceTypeOptions[key].label}
-                    value={deviceTypeOptions[key].label}
+                    value={deviceTypeOptions[key].value}
                 >{`${_(deviceTypeOptions[key].label)}`}</MenuItem>,
             );
         }
@@ -229,31 +237,31 @@ export const SelectDeviceType = (): JSX.Element => {
                     >
                         <Button
                             onClick={async () => {
-                                {
-                                    console.log('click to open Add Mock Device');
-                                    console.log(JSON.stringify(await api.listDevices()));
-                                    const testDevice: dsDevice = {
-                                        name: Config.name,
-                                        deviceType: Config.deviceType,
-                                        watchStateID: { button_0: 'test2' },
-                                        id: '1234567',
-                                        dsConfig: {
-                                            dSUID: '123455678',
-                                            primaryGroup: 1,
-                                            name: Config.name,
-                                            modelFeatures: {
-                                                highlevel: true,
-                                            },
-                                            displayId: '',
-                                            model: 'ioBroker',
-                                            modelUID: 'UUID',
-                                            modelVersion: '0.0.1',
-                                            vendorName: 'KOS',
-                                        },
-                                    };
-                                    console.log(JSON.stringify(await api.createDevice(testDevice)));
-                                    console.log(JSON.stringify(await api.listDevices()));
-                                }
+                                // {
+                                //     console.log('click to open Add Mock Device');
+                                //     console.log(JSON.stringify(await api.listDevices()));
+                                //     const testDevice: dsDevice = {
+                                //         name: Config.name,
+                                //         deviceType: Config.deviceType,
+                                //         watchStateID: { button_0: 'test2' },
+                                //         id: '1234567',
+                                //         dsConfig: {
+                                //             dSUID: '123455678',
+                                //             primaryGroup: 1,
+                                //             name: Config.name,
+                                //             modelFeatures: {
+                                //                 highlevel: true,
+                                //             },
+                                //             displayId: '',
+                                //             model: 'ioBroker',
+                                //             modelUID: 'UUID',
+                                //             modelVersion: '0.0.1',
+                                //             vendorName: 'KOS',
+                                //         },
+                                //     };
+                                //     console.log(JSON.stringify(await api.createDevice(testDevice)));
+                                //     console.log(JSON.stringify(await api.listDevices()));
+                                // }
                             }}
                             variant="outlined"
                         >
@@ -278,26 +286,8 @@ export const SelectDeviceType = (): JSX.Element => {
                         }}
                     >
                         <React.Fragment>
-                            <DefineName />
-                            <DefineConfigURL />
-                            <SelectColorClassOptions />
+                            <Sensor />
                         </React.Fragment>
-                    </Grid>
-                    <Grid
-                        container
-                        spacing={1}
-                        sx={{
-                            marginTop: '10px',
-                            paddingBottom: '15px',
-                            alignItems: 'center',
-                            justifyContent: 'space-around',
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <DefineResolution />
-                        <h1>test1</h1>
                     </Grid>
                 </React.Fragment>
             ) : null}
@@ -480,8 +470,7 @@ export const SelectDeviceType = (): JSX.Element => {
                             flexDirection: 'row',
                         }}
                     >
-                        <h1>test2</h1>
-                        <h1>test2</h1>
+                        <MultiSelectTable />
                     </Grid>
                 </React.Fragment>
             ) : null}
