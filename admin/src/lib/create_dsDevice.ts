@@ -43,7 +43,7 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
                 ],
                 outputDescription: [
                     {
-                        objName: 'light',
+                        name: 'light',
                         dsIndex: 0,
                         maxPower: -1,
                         function: 1,
@@ -54,7 +54,6 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
                 ],
                 outputSettings: [
                     {
-                        objName: 'light',
                         dimTimeDown: 15,
                         dimTimeDownAlt1: 162,
                         dimTimeDownAlt2: 104,
@@ -68,7 +67,11 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
                         groups: [1],
                     },
                 ],
+                watchStateID: { light: Config.OnOffSelectID },
+                scenes: [],
+                zoneID: '',
             },
+            scenes: [],
         };
         if (parseFloat(deviceType.function) === 0) {
             if (device.dsConfig.outputDescription) {
@@ -203,7 +206,7 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
                 ],
                 outputDescription: [
                     {
-                        objName: 'rgblight',
+                        name: 'rgblight',
                         dsIndex: 0,
                         maxPower: -1,
                         function: 4,
@@ -214,7 +217,6 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
                 ],
                 outputSettings: [
                     {
-                        objName: 'rgblight',
                         dimTimeDown: 15,
                         dimTimeDownAlt1: 162,
                         dimTimeDownAlt2: 104,
@@ -228,7 +230,19 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
                         groups: [1],
                     },
                 ],
+                watchStateID: {
+                    switch: Config.OnOffSelectID,
+                    switchModeColor: Config.ColorModeSelectID,
+                    brightness: Config.DimmerSelectID,
+                    colortemp: Config.ColorTempSelectID,
+                    hue: Config.HueSelectID,
+                    saturation: Config.SaturationSelectID,
+                    rgb: Config.RGBSelectID,
+                },
+                scenes: [],
+                zoneID: '',
             },
+            scenes: [],
         };
     }
     return null;
