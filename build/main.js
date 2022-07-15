@@ -48,7 +48,6 @@ class DigitalstromVdc extends utils.Adapter {
         Name: "running"
       }
     });
-    this.allDevices = await this.refreshDeviceList();
     dsDevices = [];
     this.allDevices.backEnd.forEach((d) => {
       this.log.info(JSON.stringify(d.dsConfig));
@@ -650,11 +649,6 @@ class DigitalstromVdc extends utils.Adapter {
     }
   }
   async refreshDeviceList() {
-    const testResult = await this.getObjectViewAsync("dwd", "listDevices", {
-      startkey: "dwd." + this.instance + ".",
-      endkey: "dwd." + this.instance + ".\u9999"
-    });
-    console.log("testResult: " + JSON.stringify(testResult));
     return await this.getObjectViewAsync("digitalstrom-vdc", "listDevicesFullObj", {
       startkey: "digitalstrom-vdc." + this.instance + ".",
       endkey: "digitalstrom-vdc." + this.instance + ".\u9999"
