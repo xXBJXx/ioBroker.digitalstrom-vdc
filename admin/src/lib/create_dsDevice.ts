@@ -8,10 +8,10 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
             name: Config.name,
             deviceType: Config.deviceType,
             watchStateID: { switch: Config.OnOffSelectID },
-            id: genDSUID(32),
-            // id: `${genDSUID(5)}_${genDSUID(5)}`,genDSUID(32)
+            // id: genDSUID(32),
+            id: `${genDSUID(5)}_${genDSUID(5)}`,
             dsConfig: {
-                dSUID: genDSUID(32),
+                dSUID: genDSUID(34),
                 primaryGroup: 1,
                 name: Config.name,
                 configURL: Config.configUrl,
@@ -25,7 +25,7 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
                 },
                 displayId: '',
                 model: 'ioBroker',
-                modelUID: genDSUID(32),
+                modelUID: genDSUID(34),
                 modelVersion: '0.0.1',
                 vendorName: 'KYUKA',
                 channelDescriptions: [
@@ -114,8 +114,8 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
         return {
             name: Config.name,
             deviceType: Config.deviceType,
-            // id: `${genDSUID(5)}_${genDSUID(5)}`,
-            id: genDSUID(32),
+            id: `${genDSUID(5)}_${genDSUID(5)}`,
+            // id: genDSUID(32),
             watchStateID: {
                 switch: Config.OnOffSelectID,
                 switchModeColor: Config.ColorModeSelectID,
@@ -126,7 +126,7 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
                 rgb: Config.RGBSelectID,
             },
             dsConfig: {
-                dSUID: genDSUID(32),
+                dSUID: genDSUID(34),
                 primaryGroup: 1,
                 name: Config.name,
                 configURL: Config.configUrl,
@@ -141,7 +141,7 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
                 },
                 displayId: '',
                 model: 'ioBroker',
-                modelUID: genDSUID(32),
+                modelUID: genDSUID(34),
                 modelVersion: '0.0.1',
                 vendorName: 'KYUKA',
                 channelDescriptions: [
