@@ -48,6 +48,7 @@ class DigitalstromVdc extends utils.Adapter {
         Name: "running"
       }
     });
+    this.allDevices = await this.refreshDeviceList();
     dsDevices = [];
     this.allDevices.backEnd.forEach((d) => {
       this.log.info(JSON.stringify(d.dsConfig));

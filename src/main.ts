@@ -72,7 +72,7 @@ class DigitalstromVdc extends utils.Adapter {
 
         //TODO: wider aktivieren
 
-        // this.allDevices = await this.refreshDeviceList();
+        this.allDevices = await this.refreshDeviceList();
 
         dsDevices = [];
         this.allDevices.backEnd.forEach((d: any) => {
@@ -986,12 +986,6 @@ class DigitalstromVdc extends utils.Adapter {
             /** A copy of the object from the DB */
             value: ioBroker.Object | null;
         }
-
-        // const testResult = await this.getObjectViewAsync('dwd', 'listDevices', {
-        //     startkey: 'dwd.' + this.instance + '.',
-        //     endkey: 'dwd.' + this.instance + '.\u9999',
-        // });
-        // console.log('testResult: ' + JSON.stringify(testResult));
 
         return await this.getObjectViewAsync('digitalstrom-vdc', 'listDevicesFullObj', {
             startkey: 'digitalstrom-vdc.' + this.instance + '.',
