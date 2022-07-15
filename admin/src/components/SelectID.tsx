@@ -67,3 +67,44 @@ export const SelectID: React.FC<SelectIDProps> = ({ title, type, buttonTitle, on
         </Box>
     );
 };
+
+export interface MultiSelectIDProps {
+    title: string;
+    buttonTitle: string;
+    onSelect: (selectId: string[] | undefined) => void;
+}
+
+export const MultiSelectID: React.FC<MultiSelectIDProps> = ({ title, buttonTitle, onSelect }): JSX.Element => {
+    const { translate: _ } = useI18n();
+    const { showSelectId } = useDialogs();
+
+    const askUser = React.useCallback(async () => {
+        const selected = await showSelectId({
+            title: _(`${title}`),
+            multiSelect: true,
+        });
+        if (onSelect) {
+            onSelect(selected);
+        }
+    }, [showSelectId]);
+
+    return (
+        <Box
+            component="span"
+            sx={{
+                p: 2,
+                border: '1px dashed grey',
+                textAlign: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                maxWidth: '100%',
+                width: '300px',
+            }}
+        >
+            <Button onClick={askUser} variant="outlined">
+                {_(`${buttonTitle}`)}
+            </Button>
+        </Box>
+    );
+};
