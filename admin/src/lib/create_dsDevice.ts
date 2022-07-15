@@ -43,10 +43,10 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
                 ],
                 outputDescription: [
                     {
-                        objName: 'light',
+                        name: 'light',
                         dsIndex: 0,
                         maxPower: -1,
-                        function: 1,
+                        function: 0,
                         outputUsage: 0,
                         type: 'output',
                         variableRamp: false,
@@ -54,7 +54,6 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
                 ],
                 outputSettings: [
                     {
-                        objName: 'light',
                         dimTimeDown: 15,
                         dimTimeDownAlt1: 162,
                         dimTimeDownAlt2: 104,
@@ -68,7 +67,11 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
                         groups: [1],
                     },
                 ],
+                watchStateID: { light: Config.OnOffSelectID },
+                scenes: [],
+                zoneID: ''
             },
+            scenes: []
         };
         if (parseFloat(deviceType.function) === 0) {
             if (device.dsConfig.outputDescription) {
