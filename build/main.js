@@ -70,12 +70,15 @@ class DigitalstromVdc extends utils.Adapter {
     this.log.debug(`dsDevices: ${JSON.stringify(this.allDevices.backEnd)}`);
     const vdc = new import_libdsvdcts.libdsvdc({ debug: this.config.vdcDebug });
     if (this.config.vdcName && this.config.vdcName.length > 0 && this.config.vdcDSUID && this.config.vdcDSUID.length > 0 && this.config.vdcPort) {
+      this.log.info(`Connecting to VDC ${this.config.vdcName}`);
+      this.log.debug(`dsDevices vor dem start: ${JSON.stringify(dsDevices)}`);
       vdc.start({
         vdcName: this.config.vdcName,
         vdcDSUID: this.config.vdcDSUID,
         port: this.config.vdcPort,
         configURL: this.config.vdcConfigURL
       }, dsDevices);
+      this.log.debug(`dsDevices nach dem start: ${JSON.stringify(dsDevices)}`);
     }
     this.vdc = vdc;
     vdc.on("messageReceived", (msg) => {

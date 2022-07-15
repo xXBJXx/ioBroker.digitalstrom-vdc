@@ -131,6 +131,8 @@ class DigitalstromVdc extends utils.Adapter {
             this.config.vdcDSUID.length > 0 &&
             this.config.vdcPort
         ) {
+            this.log.info(`Connecting to VDC ${this.config.vdcName}`);
+            this.log.debug(`dsDevices vor dem start: ${JSON.stringify(dsDevices)}`);
             vdc.start(
                 {
                     vdcName: this.config.vdcName,
@@ -140,6 +142,7 @@ class DigitalstromVdc extends utils.Adapter {
                 },
                 dsDevices,
             );
+            this.log.debug(`dsDevices nach dem start: ${JSON.stringify(dsDevices)}`);
         }
 
         this.vdc = vdc;

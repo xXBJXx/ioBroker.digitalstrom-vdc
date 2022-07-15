@@ -8,7 +8,8 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
             name: Config.name,
             deviceType: Config.deviceType,
             watchStateID: { light: Config.OnOffSelectID },
-            id: `${genDSUID(5)}_${genDSUID(5)}`,
+            id: genDSUID(32),
+            // id: `${genDSUID(5)}_${genDSUID(5)}`,genDSUID(32)
             dsConfig: {
                 dSUID: genDSUID(32),
                 primaryGroup: 1,
@@ -111,7 +112,8 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
         return {
             name: Config.name,
             deviceType: Config.deviceType,
-            id: `${genDSUID(5)}_${genDSUID(5)}`,
+            // id: `${genDSUID(5)}_${genDSUID(5)}`,
+            id: genDSUID(32),
             watchStateID: {
                 switch: Config.OnOffSelectID,
                 switchModeColor: Config.ColorModeSelectID,
