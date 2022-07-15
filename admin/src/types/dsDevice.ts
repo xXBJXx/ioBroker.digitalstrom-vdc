@@ -300,7 +300,6 @@ export type channelDescription = {
 };
 
 export type outputSetting = {
-    objName: string;
     dimTimeDown?: number;
     dimTimeDownAlt1?: number;
     dimTimeDownAlt2?: number;
@@ -327,7 +326,7 @@ export type outputSetting = {
  * 6: internally controlled (e.g. device has temperature control algorithm integrated)
  */
 export type outputDescription = {
-    objName: string;
+    name: string;
     dsIndex: number;
     maxPower: number;
     function: 0 | 1 | 2 | 3 | 4 | 5 | 6;
