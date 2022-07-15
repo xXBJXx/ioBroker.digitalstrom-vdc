@@ -71,7 +71,8 @@ class DigitalstromVdc extends utils.Adapter {
         });*/
 
         //TODO: wider aktivieren
-        // this.allDevices = await this.refreshDeviceList();
+
+        this.allDevices = await this.refreshDeviceList();
 
         dsDevices = [];
         this.allDevices.backEnd.forEach((d: any) => {

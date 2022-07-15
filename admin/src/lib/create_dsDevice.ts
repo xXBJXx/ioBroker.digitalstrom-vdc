@@ -7,7 +7,7 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
         const device: dsDevice = {
             name: Config.name,
             deviceType: Config.deviceType,
-            watchStateID: { light: Config.OnOffSelectID },
+            watchStateID: { switch: Config.OnOffSelectID },
             id: genDSUID(32),
             // id: `${genDSUID(5)}_${genDSUID(5)}`,genDSUID(32)
             dsConfig: {
@@ -44,6 +44,7 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
                 ],
                 outputDescription: [
                     {
+                        objName: 'light_0',
                         name: 'light',
                         dsIndex: 0,
                         maxPower: -1,
@@ -55,6 +56,7 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
                 ],
                 outputSettings: [
                     {
+                        objName: 'light_0',
                         dimTimeDown: 15,
                         dimTimeDownAlt1: 162,
                         dimTimeDownAlt2: 104,
@@ -208,6 +210,7 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
                 ],
                 outputDescription: [
                     {
+                        objName: 'light_0',
                         name: 'rgblight',
                         dsIndex: 0,
                         maxPower: -1,
@@ -219,6 +222,7 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
                 ],
                 outputSettings: [
                     {
+                        objName: 'light_0',
                         dimTimeDown: 15,
                         dimTimeDownAlt1: 162,
                         dimTimeDownAlt2: 104,
