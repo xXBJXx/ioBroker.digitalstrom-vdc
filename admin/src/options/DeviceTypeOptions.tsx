@@ -1,20 +1,16 @@
-import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { Box, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useI18n } from 'iobroker-react/hooks';
 import React, { useState } from 'react';
-import { Config } from '../lib/Config';
-import { SelectColorClassOptions } from './ColorClassOption';
-import DefineConfigURL from './DefineConfigURL';
-import DefineName from './DefineName';
-import DefineResolution from './DefineResolution';
+import { clearConfig, Config } from '../lib/Config';
 import { useAPI } from '../lib/useAPI';
-import { dsDevice } from '../types/dsDevice';
-import { SelectID } from '../components/SelectID';
-import { handleSelectId } from '../lib/handleSelectID';
-import { Lamp } from '../device/Lamp';
-import { MultiSelectTable } from '../components/MultiSelectTable';
-import { Sensor } from '../device/Sensor';
+import { Sensor } from '../device/SensorComponents';
+import { Lamp } from '../device/LampComponent';
+import { ButtonComponent } from '../device/ButtonComponent';
+import { DoorbellComponent } from '../device/DoorbellComponent';
+import { SmokeAlarmComponent } from '../device/SmokeAlarmComponent';
+import { AwayButtonComponent } from '../device/AwayButtonComponent';
+import { SensorConfigModal } from '../modal/SensorConfigModal';
 
-//const deviceTypeOptions: { value: string; title: string }[] = [
 const deviceTypeOptions = [
     {
         label: 'Select Device type',
@@ -30,10 +26,6 @@ const deviceTypeOptions = [
         value: 'sensor',
     },
     {
-        label: 'presenceSensor',
-        value: 'presenceSensor',
-    },
-    {
         label: 'smokeAlarm',
         value: 'smokeAlarm',
     },
@@ -46,10 +38,6 @@ const deviceTypeOptions = [
         value: 'doorbell',
     },
     {
-        label: 'multiSensor',
-        value: 'multiSensor',
-    },
-    {
         label: 'awayButton',
         value: 'awayButton',
     },
@@ -57,14 +45,17 @@ const deviceTypeOptions = [
 
 export const SelectDeviceType = (): JSX.Element => {
     const { translate: _ } = useI18n();
-    const [deviceType, sethandleDeviceType] = useState('selectDevice');
+    const [deviceType, setDeviceType] = useState('selectDevice');
+    const [open, setOpen] = React.useState(false);
 
     const handleDeviceType = (event: SelectChangeEvent) => {
         console.log(Config);
+        setDeviceType(event.target.value);
+    };
 
-        sethandleDeviceType(event.target.value);
-        console.log(event.target.value);
-        Config.deviceType = event.target.value;
+    const clear = () => {
+        setDeviceType('selectDevice');
+        clearConfig();
     };
 
     const api = useAPI();
@@ -86,6 +77,11 @@ export const SelectDeviceType = (): JSX.Element => {
     return (
         <React.Fragment>
             <React.Fragment>
+                {/*<SensorConfigModal*/}
+                {/*    open={true}*/}
+                {/*    onClose={() => setOpen(false)}*/}
+                {/*    selectId={'digitalstrom-vdc.0.plugins.sentry.enabled'}*/}
+                {/*/>*/}
                 <Grid
                     container
                     spacing={1}
@@ -116,160 +112,7 @@ export const SelectDeviceType = (): JSX.Element => {
                     </Box>
                 </Grid>
             </React.Fragment>
-            {deviceType === 'lamp' ? <Lamp api={api} /> : null}
-
-            {deviceType === 'rgbLamp' ? (
-                <React.Fragment>
-                    <Grid
-                        container
-                        spacing={1}
-                        sx={{
-                            marginTop: '10px',
-                            paddingBottom: '15px',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <React.Fragment>
-                            <DefineName />
-                            <DefineConfigURL />
-                        </React.Fragment>
-                    </Grid>
-                    <Grid
-                        container
-                        spacing={1}
-                        sx={{
-                            marginTop: '10px',
-                            paddingBottom: '15px',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <SelectID
-                            title={'OnOffSelectID'}
-                            type={'lamp'}
-                            buttonTitle={'onOffSelectID'}
-                            onSelect={(selectId, type) => handleSelectId(selectId, type)}
-                        />
-                        <SelectID
-                            title={'DimmerSelectID'}
-                            type={'dimmer'}
-                            buttonTitle={'dimmerSelectID'}
-                            onSelect={(selectId, type) => handleSelectId(selectId, type)}
-                        />
-                    </Grid>
-                    <Grid
-                        container
-                        spacing={1}
-                        sx={{
-                            marginTop: '10px',
-                            paddingBottom: '15px',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <SelectID
-                            title={'ColorModeSelectID'}
-                            type={'colorMode'}
-                            buttonTitle={'colorModeSelectID'}
-                            onSelect={(selectId, type) => handleSelectId(selectId, type)}
-                        />
-                        <SelectID
-                            title={'ColorTempSelectID'}
-                            type={'colorTemp'}
-                            buttonTitle={'colorTempSelectID'}
-                            onSelect={(selectId, type) => handleSelectId(selectId, type)}
-                        />
-                    </Grid>
-                    <Grid
-                        container
-                        spacing={1}
-                        sx={{
-                            marginTop: '10px',
-                            paddingBottom: '15px',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <SelectID
-                            title={'HueSelectID'}
-                            type={'hue'}
-                            buttonTitle={'hueSelectID'}
-                            onSelect={(selectId, type) => handleSelectId(selectId, type)}
-                        />
-                        <SelectID
-                            title={'SaturationSelectID'}
-                            type={'saturation'}
-                            buttonTitle={'saturationSelectID'}
-                            onSelect={(selectId, type) => handleSelectId(selectId, type)}
-                        />
-                        <SelectID
-                            title={'RGBSelectID'}
-                            type={'rgbLamp'}
-                            buttonTitle={'rgbSelectID'}
-                            onSelect={(selectId, type) => handleSelectId(selectId, type)}
-                        />
-                    </Grid>
-                    <Grid
-                        container
-                        spacing={1}
-                        sx={{
-                            marginTop: '10px',
-                            paddingBottom: '15px',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <Button
-                            onClick={async () => {
-                                // {
-                                //     console.log('click to open Add Mock Device');
-                                //     console.log(JSON.stringify(await api.listDevices()));
-                                //     const testDevice: dsDevice = {
-                                //         name: Config.name,
-                                //         deviceType: Config.deviceType,
-                                //         watchStateID: { button_0: 'test2' },
-                                //         id: '1234567',
-                                //         dsConfig: {
-                                //             dSUID: '123455678',
-                                //             primaryGroup: 1,
-                                //             name: Config.name,
-                                //             modelFeatures: {
-                                //                 highlevel: true,
-                                //             },
-                                //             displayId: '',
-                                //             model: 'ioBroker',
-                                //             modelUID: 'UUID',
-                                //             modelVersion: '0.0.1',
-                                //             vendorName: 'KOS',
-                                //         },
-                                //     };
-                                //     console.log(JSON.stringify(await api.createDevice(testDevice)));
-                                //     console.log(JSON.stringify(await api.listDevices()));
-                                // }
-                            }}
-                            variant="outlined"
-                        >
-                            Add New Device
-                        </Button>
-                    </Grid>
-                </React.Fragment>
-            ) : null}
+            {deviceType === 'lamp' ? <Lamp api={api} clearInput={() => clear()} /> : null}
             {deviceType === 'sensor' ? (
                 <React.Fragment>
                     <Grid
@@ -285,229 +128,28 @@ export const SelectDeviceType = (): JSX.Element => {
                             flexDirection: 'row',
                         }}
                     >
-                        <React.Fragment>
-                            <Sensor />
-                        </React.Fragment>
-                    </Grid>
-                </React.Fragment>
-            ) : null}
-            {deviceType === 'presenceSensor' ? (
-                <React.Fragment>
-                    <Grid
-                        container
-                        spacing={1}
-                        sx={{
-                            marginTop: '10px',
-                            paddingBottom: '15px',
-                            alignItems: 'center',
-                            justifyContent: 'space-around',
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <React.Fragment>
-                            <DefineName />
-                            <DefineConfigURL />
-                        </React.Fragment>
-                    </Grid>
-                    <Grid
-                        container
-                        spacing={1}
-                        sx={{
-                            marginTop: '10px',
-                            paddingBottom: '15px',
-                            alignItems: 'center',
-                            justifyContent: 'space-around',
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <h1>test1</h1>
+                        <Sensor api={api} clearInput={() => clear()} />
                     </Grid>
                 </React.Fragment>
             ) : null}
             {deviceType === 'smokeAlarm' ? (
                 <React.Fragment>
-                    <Grid
-                        container
-                        spacing={1}
-                        sx={{
-                            marginTop: '10px',
-                            paddingBottom: '15px',
-                            alignItems: 'center',
-                            justifyContent: 'space-around',
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <React.Fragment>
-                            <DefineName />
-                            <DefineConfigURL />
-                        </React.Fragment>
-                    </Grid>
-                    <Grid
-                        container
-                        spacing={1}
-                        sx={{
-                            marginTop: '10px',
-                            paddingBottom: '15px',
-                            alignItems: 'center',
-                            justifyContent: 'space-around',
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <h1>test1</h1>
-                    </Grid>
+                    <SmokeAlarmComponent api={api} clearInput={() => clear()} />
                 </React.Fragment>
             ) : null}
             {deviceType === 'button' ? (
                 <React.Fragment>
-                    <Grid
-                        container
-                        spacing={1}
-                        sx={{
-                            marginTop: '10px',
-                            paddingBottom: '15px',
-                            alignItems: 'center',
-                            justifyContent: 'space-around',
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <React.Fragment>
-                            <DefineName />
-                            <DefineConfigURL />
-                        </React.Fragment>
-                    </Grid>
-                    <Grid
-                        container
-                        spacing={1}
-                        sx={{
-                            marginTop: '10px',
-                            paddingBottom: '15px',
-                            alignItems: 'center',
-                            justifyContent: 'space-around',
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <h1>test1</h1>
-                    </Grid>
+                    <ButtonComponent api={api} clearInput={() => clear()} />
                 </React.Fragment>
             ) : null}
             {deviceType === 'doorbell' ? (
                 <React.Fragment>
-                    <Grid
-                        container
-                        spacing={1}
-                        sx={{
-                            marginTop: '10px',
-                            paddingBottom: '15px',
-                            alignItems: 'center',
-                            justifyContent: 'space-around',
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <React.Fragment>
-                            <DefineName />
-                            <DefineConfigURL />
-                        </React.Fragment>
-                    </Grid>
-                    <Grid
-                        container
-                        spacing={1}
-                        sx={{
-                            marginTop: '10px',
-                            paddingBottom: '15px',
-                            alignItems: 'center',
-                            justifyContent: 'space-around',
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <h1>test1</h1>
-                    </Grid>
-                </React.Fragment>
-            ) : null}
-            {deviceType === 'multiSensor' ? (
-                <React.Fragment>
-                    <Grid
-                        container
-                        spacing={1}
-                        sx={{
-                            marginTop: '10px',
-                            paddingBottom: '15px',
-                            alignItems: 'center',
-                            justifyContent: 'space-around',
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <DefineName />
-                        <DefineConfigURL />
-                    </Grid>
-                    <Grid
-                        container
-                        spacing={1}
-                        sx={{
-                            marginTop: '10px',
-                            paddingBottom: '15px',
-                            alignItems: 'center',
-                            justifyContent: 'space-around',
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <MultiSelectTable />
-                    </Grid>
+                    <DoorbellComponent api={api} clearInput={() => clear()} />
                 </React.Fragment>
             ) : null}
             {deviceType === 'awayButton' ? (
                 <React.Fragment>
-                    <Grid
-                        container
-                        spacing={1}
-                        sx={{
-                            marginTop: '10px',
-                            paddingBottom: '15px',
-                            alignItems: 'center',
-                            justifyContent: 'space-around',
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <DefineName />
-                        <DefineConfigURL />
-                    </Grid>
-                    <Grid
-                        container
-                        spacing={1}
-                        sx={{
-                            marginTop: '10px',
-                            paddingBottom: '15px',
-                            alignItems: 'center',
-                            justifyContent: 'space-around',
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <h1>test2</h1>
-                        <h1>test2</h1>
-                    </Grid>
+                    <AwayButtonComponent api={api} clearInput={() => clear()} />
                 </React.Fragment>
             ) : null}
         </React.Fragment>
