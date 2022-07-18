@@ -2,9 +2,13 @@ export type dsDevice = {
     name: string;
     deviceType: string;
     watchStateID: watchStateID;
+    modifiers?: modifiers;
     id: string;
     dsConfig: dsConfig;
-    scenes: string[];
+};
+
+export type modifiers = {
+    [key: string]: number;
 };
 
 export type watchStateID = {
@@ -45,9 +49,7 @@ export type dsConfig = {
     binaryInputSettings?: [binaryInputSetting];
     buttonInputDescriptions?: [buttonInputDescription];
     buttonInputSettings?: [buttonInputSetting];
-    watchStateID: watchStateID;
-    scenes: string[];
-    zoneID: string;
+    watchStateIDs: watchStateID;
 };
 
 /**
@@ -92,8 +94,8 @@ export type buttonInputSetting = {
     function: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15;
     mode: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 255;
     channel: number;
-    setsLocalPriority: boolean;
-    callsPresent: boolean;
+    setsLocalPriority: number;
+    callsPresent: number;
 };
 /**
  * buttonType
@@ -119,9 +121,9 @@ export type buttonInputDescription = {
     objName: string;
     type: 'buttonInput';
     dsIndex: number;
-    supportsLocalKeyMode: boolean;
+    supportsLocalKeyMode: number;
     buttonID?: number;
-    combinables?: boolean;
+    combinables?: number;
     buttonType: 0 | 1 | 2 | 3 | 4 | 5 | 6;
     buttonElementID: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 };
@@ -329,6 +331,12 @@ export type outputSetting = {
  * 5: bipolar, with negative and positive values (e.g. combined heating/-
  * cooling valve, in/out fan control)
  * 6: internally controlled (e.g. device has temperature control algorithm integrated)
+ *
+ * outputUsage:
+ * 0: undefined (generic usage or unknown)
+ * 1: room climate
+ * 2: outdoor climate
+ * 3: user (display/indicator)
  */
 export type outputDescription = {
     objName: string;
@@ -433,4 +441,17 @@ export type sensorSetting = {
     changesOnlyInterval: number;
 };
 
+/**
+ * colorGroup
+ * 0: undefined
+ * 1: yellowColor
+ * 2: greyColor
+ * 3: blueColor
+ * 4: cyanColor
+ * 5: magentaColor
+ * 6: redColor
+ * 7: greenColor
+ * 8: blackColor
+ * 9: whiteColor
+ */
 export type colorGroup = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;

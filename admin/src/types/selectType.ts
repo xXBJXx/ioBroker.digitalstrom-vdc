@@ -7,4 +7,11 @@ export type SelectType =
     | 'hue'
     | 'saturation'
     | 'sensor'
-    | 'button';
+    | 'button0'
+    | 'button1'
+    | 'button2'
+    | 'button3'
+    | 'doorbell'
+    | 'presenceSensor'
+    | 'smokeAlarm'
+    | 'awayButton';
