@@ -31,7 +31,7 @@
     "hueSelectID": "HUE DP auswählen",
     "selectedHueDP": "selektierter HUE DP",
     "onOffSelectID": "ON/OFF DP auswählen",
-    "selectedOnOffDP": "selektierter ON/OFFF DP",
+    "selectedOnOffDP": "selektierter ON/OFF DP",
     "dimmerSelectID": "Dimmer DP auswählen",
     "selectedDimmerDP": "selektierter Dimmer DP",
     "saturationSelectID": "Saturation DP auswählen",
@@ -42,5 +42,7 @@
     "selectedColorTempDP": "selektierter Temp DP",
     "rgbSelectID": "RGB DP auswählen",
     "selectedRGBDP": "selektierter RGB DP",
-    "defineName": "Name vergeben"
+    "defineName": "Name vergeben",
+    "sensorSelectIDButton": "Sensor DP auswählen",
+    "sensorConfig": "Sensor Konfiguration für: > %s <"
 }

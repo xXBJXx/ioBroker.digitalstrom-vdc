@@ -42,5 +42,9 @@
     "selectedColorTempDP": "Show selected Temp DP",
     "rgbSelectID": "Select RGB DP",
     "selectedRGBDP": "Show selected RGB DP",
-    "defineName": "Please set a Name"
+    "defineName": "Please set a Name",
+    "sensorSelectIDButton": "Select Sensor DP",
+    "name": "Name",
+    "config_url": "Config URL",
+    "sensorConfig": "Sensor Config for: > %s <"
 }
