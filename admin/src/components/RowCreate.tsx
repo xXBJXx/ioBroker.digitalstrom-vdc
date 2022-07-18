@@ -12,7 +12,11 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import LightIcon from '@mui/icons-material/Light';
 import moment from 'moment';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import SensorsIcon from '@mui/icons-material/Sensors';
 import Box from '@material-ui/core/Box';
+import GridViewIcon from '@mui/icons-material/GridView';
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 
 export interface RowCreateProps {
     row: ioBroker.Object;
@@ -30,6 +34,30 @@ export const Row: React.FC<RowCreateProps> = ({ row, refreshDevices }): JSX.Elem
         refreshDevices();
     };
 
+    const handleIcon = (row: ioBroker.Object) => {
+        if (row.native.deviceObj.deviceType === 'lamp') {
+            return <LightIcon />;
+        }
+        if (row.native.deviceObj.deviceType === 'rgbLamp') {
+            return <LightIcon />;
+        }
+        if (row.native.deviceObj.deviceType === 'doorbell') {
+            return <NotificationsActiveIcon />;
+        }
+        if (row.native.deviceObj.deviceType === 'sensor') {
+            return <SensorsIcon />;
+        }
+        if (row.native.deviceObj.deviceType === 'button') {
+            return <GridViewIcon />;
+        }
+        if (row.native.deviceObj.deviceType === 'awayButton') {
+            return <DirectionsRunIcon />;
+        }
+        if (row.native.deviceObj.deviceType === 'smokeAlarm') {
+            return <NotificationsActiveIcon />;
+        }
+    };
+
     return (
         <React.Fragment>
             <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -39,7 +67,7 @@ export const Row: React.FC<RowCreateProps> = ({ row, refreshDevices }): JSX.Elem
                     </IconButton>
                 </TableCell>
                 <TableCell component="th" scope="row">
-                    <Chip icon={<LightIcon />} label={row.common.name} variant="outlined" />
+                    <Chip icon={handleIcon(row)} label={row.common.name} variant="outlined" />
                 </TableCell>
                 <TableCell align="right">{moment(row.ts).format('DD.MM.YYYY')}</TableCell>
                 <TableCell align="right">{row.native.deviceObj.dsConfig.dSUID}</TableCell>
