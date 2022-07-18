@@ -1,18 +1,27 @@
 /**
  * Created by alex-issi on 15.07.22
  */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useI18n } from 'iobroker-react/hooks';
-import { useIoBrokerTheme } from 'iobroker-react/hooks';
-import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import { MultiSelectID, SelectID } from './SelectID';
+import {
+    Box,
+    IconButton,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+} from '@mui/material';
+import { Ballot } from '@mui/icons-material';
+import { MultiSelectID } from '../components/SelectID';
 
-export interface MultiSelectTableProps {
-    // ids: string[] | undefined;
+export interface MultiSensorProps {
     //props
 }
 
-export const MultiSelectTable: React.FC<MultiSelectTableProps> = (): JSX.Element => {
+export const MultiSensor: React.FC<MultiSensorProps> = (): JSX.Element => {
     const { translate: _ } = useI18n();
     const [ids, setIds] = React.useState<string[] | undefined>([]);
 
@@ -28,10 +37,13 @@ export const MultiSelectTable: React.FC<MultiSelectTableProps> = (): JSX.Element
                     alignItems: 'center',
                     justifyContent: 'center',
                     maxWidth: '100%',
-                    // width: '500px',
                 }}
             >
-                <MultiSelectID title={'test'} buttonTitle={'test'} onSelect={(selectId) => setIds(selectId)} />
+                <MultiSelectID
+                    title={'multiSelectID'}
+                    buttonTitle={'sensorSelectIDButton'}
+                    onSelect={(selectId) => setIds(selectId)}
+                />
                 <TableContainer component={Paper} elevation={2}>
                     <Table aria-label="collapsible table">
                         <TableHead>
@@ -48,9 +60,9 @@ export const MultiSelectTable: React.FC<MultiSelectTableProps> = (): JSX.Element
                                               {row}
                                           </TableCell>
                                           <TableCell align={'right'}>
-                                              <Button onClick={() => setIds(ids.filter((id) => id !== row))}>
-                                                  {_('remove')}
-                                              </Button>
+                                              <IconButton onClick={() => console.log(row)}>
+                                                  <Ballot />
+                                              </IconButton>
                                           </TableCell>
                                       </TableRow>
                                   ))
