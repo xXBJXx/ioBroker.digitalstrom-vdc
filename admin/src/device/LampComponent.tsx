@@ -1,105 +1,48 @@
 /**
  * Created by alex-issi on 13.07.22
  */
-import React from 'react';
-import {
-    Box,
-    Button,
-    FormControl,
-    FormControlLabel,
-    FormLabel,
-    Grid,
-    Radio,
-    RadioGroup,
-    TextField,
-} from '@mui/material';
+import React, { useEffect } from 'react';
+import { Button, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup } from '@mui/material';
 import { SelectID } from '../components/SelectID';
 import { handleSelectId } from '../lib/handleSelectID';
 import { API } from '../lib/useAPI';
-import { clearConfig, Config } from '../lib/Config';
+import { Config } from '../lib/Config';
 import { createDevice } from '../lib/create_dsDevice';
+import { NameComponent } from '../components/NameComponent';
 
 export interface LampProps {
     api: API;
+    clearInput: () => void;
 }
 
-export const Lamp: React.FC<LampProps> = ({ api }): JSX.Element => {
-    const [name, setName] = React.useState('');
+export const Lamp: React.FC<LampProps> = ({ api, clearInput }): JSX.Element => {
     const [clear, setClear] = React.useState(false);
-    const [configURL, setConfigURL] = React.useState('http://localhost:8081');
     const [deviceType, setDeviceType] = React.useState({
         type: 'lamp',
         function: '0',
     });
 
+    useEffect(() => {
+        Config.deviceType = 'lamp';
+    }, []);
+
     const handleChangeType = (event: React.ChangeEvent<HTMLInputElement>) => {
         setDeviceType({ ...deviceType, type: (event.target as HTMLInputElement).value });
+        Config.deviceType = (event.target as HTMLInputElement).value;
+        setClear(!clear);
     };
 
     const handleChangeFunctionType = (event: React.ChangeEvent<HTMLInputElement>) => {
         setDeviceType({ ...deviceType, function: (event.target as HTMLInputElement).value });
     };
 
-    const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setName(event.target.value);
-        Config.name = event.target.value;
-    };
-    const handleConfigURLChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setConfigURL(event.target.value);
-        Config.configUrl = event.target.value;
-    };
-
     const handleClear = () => {
-        setName('');
-        setConfigURL('http://localhost:8081');
-        clearConfig();
-        setClear(!clear);
+        clearInput();
     };
 
     return (
         <React.Fragment>
-            <Grid
-                container
-                spacing={1}
-                sx={{
-                    marginTop: '10px',
-                    paddingBottom: '15px',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    flexDirection: 'row',
-                }}
-            >
-                <React.Fragment>
-                    <Box
-                        sx={{
-                            marginTop: '10px',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <Box
-                            component="form"
-                            sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}
-                            noValidate
-                            autoComplete="off"
-                        >
-                            <TextField id="outlined-name" label="Name" value={name} onChange={handleNameChange} />
-                            <TextField
-                                id="outlined-Url"
-                                label="Config URL"
-                                placeholder={'http://localhost:8081'}
-                                value={configURL}
-                                onChange={handleConfigURLChange}
-                            />
-                        </Box>
-                    </Box>
-                </React.Fragment>
-            </Grid>
+            <NameComponent />
             <Grid
                 container
                 spacing={1}
@@ -114,7 +57,14 @@ export const Lamp: React.FC<LampProps> = ({ api }): JSX.Element => {
             >
                 <React.Fragment>
                     <FormControl>
-                        <FormLabel id="device-type-label">Device Type</FormLabel>
+                        <FormLabel
+                            sx={{
+                                textAlign: 'center',
+                            }}
+                            id="device-type-label"
+                        >
+                            Device Type
+                        </FormLabel>
                         <RadioGroup
                             row
                             aria-labelledby="device-type-label"
@@ -158,7 +108,14 @@ export const Lamp: React.FC<LampProps> = ({ api }): JSX.Element => {
                     >
                         <React.Fragment>
                             <FormControl>
-                                <FormLabel id="device-type-label">Type</FormLabel>
+                                <FormLabel
+                                    sx={{
+                                        textAlign: 'center',
+                                    }}
+                                    id="device-type-label"
+                                >
+                                    Type
+                                </FormLabel>
                                 <RadioGroup
                                     row
                                     aria-labelledby="device-type-label"
