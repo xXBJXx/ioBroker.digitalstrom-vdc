@@ -1,14 +1,13 @@
 import { Config } from './Config';
 import { genDSUID } from './genDSUID';
-import { dsDevice } from '../types/dsDevice';
+import { dsDevice, watchStateID, sensorDescription, sensorSetting, modifiers } from '../types/dsDevice';
 
-export const createDevice = (deviceType: { type: string; function: string }): dsDevice | null => {
+export const createDevice = (deviceType: { type: string; function?: string }): dsDevice | null => {
     if (deviceType.type === 'lamp') {
         const device: dsDevice = {
             name: Config.name,
             deviceType: Config.deviceType,
             watchStateID: { switch: Config.OnOffSelectID },
-            // id: genDSUID(32),
             id: `${genDSUID(5)}_${genDSUID(5)}`,
             dsConfig: {
                 dSUID: genDSUID(34),
@@ -70,41 +69,40 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
                         groups: [1],
                     },
                 ],
-                watchStateID: { light: Config.OnOffSelectID },
-                scenes: [],
-                zoneID: '',
+                watchStateIDs: { switch: Config.OnOffSelectID },
             },
-            scenes: [],
         };
-        if (parseFloat(deviceType.function) === 0) {
-            if (device.dsConfig.outputDescription) {
-                device.dsConfig.outputDescription[0].function = 0;
+        if (deviceType.function !== undefined) {
+            if (parseFloat(deviceType.function) === 0) {
+                if (device.dsConfig.outputDescription) {
+                    device.dsConfig.outputDescription[0].function = 0;
+                }
             }
-        }
-        if (parseFloat(deviceType.function) === 1) {
-            if (device.dsConfig.outputDescription) {
-                device.dsConfig.outputDescription[0].function = 1;
-                device.watchStateID.brightness = Config.DimmerSelectID;
+            if (parseFloat(deviceType.function) === 1) {
+                if (device.dsConfig.outputDescription) {
+                    device.dsConfig.outputDescription[0].function = 1;
+                    device.watchStateID.brightness = Config.DimmerSelectID;
+                }
             }
-        }
-        if (parseFloat(deviceType.function) === 3) {
-            if (device.dsConfig.outputDescription) {
-                device.dsConfig.outputDescription[0].function = 3;
-                device.watchStateID.brightness = Config.DimmerSelectID;
-                device.watchStateID.colortemp = Config.ColorTempSelectID;
-                if (device.dsConfig.channelDescriptions) {
-                    device.dsConfig.channelDescriptions.push({
-                        colortemp: {
-                            channelType: 4,
-                            dsIndex: 3,
-                            max: 1000,
-                            min: 100,
-                            name: 'color temperature',
-                            resolution: 1,
-                            siunit: 'mired',
-                            symbol: 'mired',
-                        },
-                    });
+            if (parseFloat(deviceType.function) === 3) {
+                if (device.dsConfig.outputDescription) {
+                    device.dsConfig.outputDescription[0].function = 3;
+                    device.watchStateID.brightness = Config.DimmerSelectID;
+                    device.watchStateID.colortemp = Config.ColorTempSelectID;
+                    if (device.dsConfig.channelDescriptions) {
+                        device.dsConfig.channelDescriptions.push({
+                            colortemp: {
+                                channelType: 4,
+                                dsIndex: 3,
+                                max: 1000,
+                                min: 100,
+                                name: 'color temperature',
+                                resolution: 1,
+                                siunit: 'mired',
+                                symbol: 'mired',
+                            },
+                        });
+                    }
                 }
             }
         }
@@ -115,7 +113,6 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
             name: Config.name,
             deviceType: Config.deviceType,
             id: `${genDSUID(5)}_${genDSUID(5)}`,
-            // id: genDSUID(32),
             watchStateID: {
                 switch: Config.OnOffSelectID,
                 switchModeColor: Config.ColorModeSelectID,
@@ -236,7 +233,7 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
                         groups: [1],
                     },
                 ],
-                watchStateID: {
+                watchStateIDs: {
                     switch: Config.OnOffSelectID,
                     switchModeColor: Config.ColorModeSelectID,
                     brightness: Config.DimmerSelectID,
@@ -245,11 +242,419 @@ export const createDevice = (deviceType: { type: string; function: string }): ds
                     saturation: Config.SaturationSelectID,
                     rgb: Config.RGBSelectID,
                 },
-                scenes: [],
-                zoneID: '',
             },
-            scenes: [],
         };
     }
+    if (deviceType.type === 'button') {
+        const device: dsDevice = {
+            name: Config.name,
+            deviceType: Config.deviceType,
+            watchStateID: { button_0: Config.buttonSelectID },
+            id: `${genDSUID(5)}_${genDSUID(5)}`,
+            dsConfig: {
+                dSUID: genDSUID(34),
+                primaryGroup: 8,
+                name: Config.name,
+                configURL: Config.configUrl,
+                modelFeatures: {
+                    highlevel: true,
+                    jokerconfig: true,
+                    pushbadvanced: true,
+                    pushbarea: true,
+                    pushbutton: true,
+                },
+                displayId: '',
+                model: 'ioBroker',
+                modelUID: genDSUID(34),
+                modelVersion: '0.0.1',
+                vendorName: 'KYUKA',
+                buttonInputDescriptions: [
+                    {
+                        buttonElementID: 0,
+                        buttonID: 0,
+                        buttonType: 1,
+                        combinables: 0,
+                        dsIndex: 0,
+                        supportsLocalKeyMode: 0,
+                        type: 'buttonInput',
+                        objName: 'button_0',
+                    },
+                ],
+                buttonInputSettings: [
+                    {
+                        callsPresent: 0,
+                        channel: 0,
+                        function: 0,
+                        group: 1,
+                        mode: 0,
+                        setsLocalPriority: 0,
+                        objName: 'button_0',
+                    },
+                ],
+                watchStateIDs: {
+                    button_0: Config.buttonSelectID,
+                },
+            },
+        };
+        if (deviceType.function !== undefined) {
+            if (parseFloat(deviceType.function) === 1) {
+                if (device.dsConfig.buttonInputDescriptions) {
+                    device.dsConfig.buttonInputDescriptions[0].buttonType = 1;
+                }
+            }
+            if (parseFloat(deviceType.function) === 2) {
+                if (device.dsConfig.buttonInputDescriptions) {
+                    device.dsConfig.buttonInputDescriptions[0].buttonType = 2;
+                    device.dsConfig.watchStateIDs.button_1 = Config.buttonSelectID1;
+                    device.watchStateID.button_1 = Config.buttonSelectID1;
+                }
+            }
+            if (parseFloat(deviceType.function) === 3) {
+                if (device.dsConfig.buttonInputDescriptions) {
+                    device.dsConfig.buttonInputDescriptions[0].buttonType = 3;
+                    device.dsConfig.watchStateIDs.button_1 = Config.buttonSelectID1;
+                    device.watchStateID.button_1 = Config.buttonSelectID1;
+                    device.dsConfig.watchStateIDs.button_2 = Config.buttonSelectID2;
+                    device.watchStateID.button_2 = Config.buttonSelectID2;
+                    device.dsConfig.watchStateIDs.button_3 = Config.buttonSelectID3;
+                    device.watchStateID.button_3 = Config.buttonSelectID3;
+                }
+            }
+            if (parseFloat(deviceType.function) === 6) {
+                if (device.dsConfig.buttonInputDescriptions) {
+                    device.dsConfig.buttonInputDescriptions[0].buttonType = 6;
+                }
+            }
+        }
+        return device;
+    }
+    if (deviceType.type === 'doorbell') {
+        return {
+            name: Config.name,
+            deviceType: Config.deviceType,
+            watchStateID: { button_0: Config.doorbellSelectID },
+            id: `${genDSUID(5)}_${genDSUID(5)}`,
+            dsConfig: {
+                dSUID: genDSUID(34),
+                primaryGroup: 8,
+                name: Config.name,
+                configURL: Config.configUrl,
+                modelFeatures: {
+                    highlevel: true,
+                    jokerconfig: true,
+                    pushbadvanced: true,
+                    pushbarea: true,
+                    pushbutton: true,
+                },
+                displayId: '',
+                model: 'ioBroker',
+                modelUID: genDSUID(34),
+                modelVersion: '0.0.1',
+                vendorName: 'KYUKA',
+                buttonInputDescriptions: [
+                    {
+                        buttonElementID: 0,
+                        buttonID: 0,
+                        buttonType: 1,
+                        dsIndex: 0,
+                        supportsLocalKeyMode: 0,
+                        type: 'buttonInput',
+                        objName: 'button_0',
+                    },
+                ],
+                buttonInputSettings: [
+                    {
+                        callsPresent: 0,
+                        channel: 0,
+                        function: 5,
+                        group: 8,
+                        mode: 0,
+                        setsLocalPriority: 0,
+                        objName: 'button_0',
+                    },
+                ],
+                watchStateIDs: {
+                    button_0: Config.doorbellSelectID,
+                },
+            },
+        };
+    }
+    if (deviceType.type === 'awayButton') {
+        return {
+            name: Config.name,
+            deviceType: Config.deviceType,
+            watchStateID: { button_0: Config.awayButtonSelectID },
+            id: `${genDSUID(5)}_${genDSUID(5)}`,
+            dsConfig: {
+                dSUID: genDSUID(34),
+                primaryGroup: 8,
+                name: Config.name,
+                configURL: Config.configUrl,
+                modelFeatures: {
+                    highlevel: true,
+                    jokerconfig: true,
+                    pushbadvanced: true,
+                    pushbarea: true,
+                    pushbutton: true,
+                },
+                displayId: '',
+                model: 'ioBroker',
+                modelUID: genDSUID(34),
+                modelVersion: '0.0.1',
+                vendorName: 'KYUKA',
+                buttonInputDescriptions: [
+                    {
+                        buttonElementID: 0,
+                        buttonID: 0,
+                        buttonType: 1,
+                        combinables: 0,
+                        dsIndex: 0,
+                        supportsLocalKeyMode: 0,
+                        type: 'buttonInput',
+                        objName: 'button_0',
+                    },
+                ],
+                buttonInputSettings: [
+                    {
+                        callsPresent: 0,
+                        channel: 0,
+                        function: 3,
+                        group: 1,
+                        mode: 0,
+                        setsLocalPriority: 0,
+                        objName: 'button_0',
+                    },
+                ],
+                watchStateIDs: {
+                    button_0: Config.awayButtonSelectID,
+                },
+            },
+        };
+    }
+    if (deviceType.type === 'presenceSensor') {
+        const device: dsDevice = {
+            name: Config.name,
+            deviceType: Config.deviceType,
+            watchStateID: { generic_0: Config.presenceSensorSelectID },
+            id: `${genDSUID(5)}_${genDSUID(5)}`,
+            dsConfig: {
+                dSUID: genDSUID(34),
+                primaryGroup: 8,
+                name: Config.name,
+                configURL: Config.configUrl,
+                modelFeatures: {
+                    highlevel: true,
+                    akmsensor: true,
+                },
+                displayId: '',
+                model: 'ioBroker',
+                modelUID: genDSUID(34),
+                modelVersion: '0.0.1',
+                vendorName: 'KYUKA',
+                binaryInputDescriptions: [
+                    {
+                        objName: 'generic_0',
+                        dsIndex: 0,
+                        inputType: 0,
+                        inputUsage: 0,
+                        updateInterval: 0,
+                        sensorFunction: 5,
+                        type: 'binaryInput',
+                    },
+                ],
+                binaryInputSettings: [
+                    {
+                        group: 8,
+                        objName: 'generic_0',
+                        sensorFunction: 5,
+                    },
+                ],
+                watchStateIDs: {
+                    generic_0: Config.presenceSensorSelectID,
+                },
+            },
+        };
+        if (Config.deviceSensorUsage !== undefined) {
+            if (Config.deviceSensorUsage === 0) {
+                if (device.dsConfig.binaryInputDescriptions) {
+                    device.dsConfig.binaryInputDescriptions[0].inputUsage = 0;
+                }
+            }
+            if (Config.deviceSensorUsage === 1) {
+                if (device.dsConfig.binaryInputDescriptions) {
+                    device.dsConfig.binaryInputDescriptions[0].inputUsage = 1;
+                }
+            }
+            if (Config.deviceSensorUsage === 2) {
+                if (device.dsConfig.binaryInputDescriptions) {
+                    device.dsConfig.binaryInputDescriptions[0].inputUsage = 2;
+                }
+            }
+        }
+        return device;
+    }
+    if (deviceType.type === 'smokeAlarm') {
+        const device: dsDevice = {
+            name: Config.name,
+            deviceType: Config.deviceType,
+            watchStateID: { generic_0: Config.smokeAlarmSelectID },
+            id: `${genDSUID(5)}_${genDSUID(5)}`,
+            dsConfig: {
+                dSUID: genDSUID(34),
+                primaryGroup: 8,
+                name: Config.name,
+                configURL: Config.configUrl,
+                modelFeatures: {
+                    highlevel: true,
+                    jokerconfig: true,
+                    akmsensor: true,
+                },
+                displayId: '',
+                model: 'ioBroker',
+                modelUID: genDSUID(34),
+                modelVersion: '0.0.1',
+                vendorName: 'KYUKA',
+                binaryInputDescriptions: [
+                    {
+                        objName: 'generic_0',
+                        dsIndex: 0,
+                        inputType: 0,
+                        inputUsage: 0,
+                        sensorFunction: 7,
+                        updateInterval: 0,
+                        type: 'binaryInput',
+                    },
+                ],
+                binaryInputSettings: [
+                    {
+                        group: 8,
+                        sensorFunction: 7,
+                        objName: 'generic_0',
+                    },
+                ],
+                watchStateIDs: {
+                    generic_0: Config.smokeAlarmSelectID,
+                },
+            },
+        };
+
+        if (Config.deviceSensorUsage !== undefined) {
+            if (Config.deviceSensorUsage === 0) {
+                if (device.dsConfig.binaryInputDescriptions) {
+                    device.dsConfig.binaryInputDescriptions[0].inputUsage = 0;
+                }
+            }
+            if (Config.deviceSensorUsage === 1) {
+                if (device.dsConfig.binaryInputDescriptions) {
+                    device.dsConfig.binaryInputDescriptions[0].inputUsage = 1;
+                }
+            }
+            if (Config.deviceSensorUsage === 2) {
+                if (device.dsConfig.binaryInputDescriptions) {
+                    device.dsConfig.binaryInputDescriptions[0].inputUsage = 2;
+                }
+            }
+        }
+        return device;
+    }
+    if (deviceType.type === 'sensor') {
+        return {
+            name: Config.name,
+            deviceType: Config.deviceType,
+            watchStateID: { sensor_0: Config.sensorSelectID },
+            modifiers: {
+                sensor_0: Config.sensorMultiplier,
+            },
+            id: `${genDSUID(5)}_${genDSUID(5)}`,
+            dsConfig: {
+                dSUID: genDSUID(34),
+                primaryGroup: Config.color,
+                name: Config.name,
+                configURL: Config.configUrl,
+                modelFeatures: {},
+                displayId: '',
+                model: 'ioBroker',
+                modelUID: genDSUID(34),
+                modelVersion: '0.0.1',
+                vendorName: 'KYUKA',
+                sensorDescriptions: [
+                    {
+                        objName: 'sensor_0',
+                        aliveSignInterval: 0,
+                        dsIndex: 0,
+                        max: Config.deviceSensorMax,
+                        maxPushInterval: 0,
+                        min: Config.deviceSensorMin,
+                        resolution: Config.deviceSensorResolution,
+                        sensorType: Config.deviceSensorType as sensorDescription['sensorType'],
+                        sensorUsage: Config.deviceSensorUsage as sensorDescription['sensorUsage'],
+                        siunit: Config.deviceSensorSIUnit,
+                        symbol: Config.deviceSensorSymbol,
+                        type: 'sensor',
+                        updateInterval: 0,
+                    },
+                ],
+                watchStateIDs: { sensor_0: Config.sensorSelectID },
+            },
+        };
+    }
+    if (deviceType.type === 'multiSensor') {
+        const watchStateID: watchStateID = {};
+        const sensorDescription: Array<sensorDescription> = [];
+        const sensorSetting: Array<sensorSetting> = [];
+        const sensorModifiers: modifiers = {};
+        Config.sensorList.forEach((s, i) => {
+            watchStateID[`sensor_${i}`] = s.selectSensor;
+            sensorModifiers[`sensor_${i}`] = s.modifier;
+            sensorDescription.push({
+                objName: `sensor_${i}`,
+                aliveSignInterval: 0,
+                dsIndex: i,
+                max: s.deviceSensorMax,
+                maxPushInterval: 0,
+                min: s.deviceSensorMin,
+                resolution: s.deviceSensorResolution,
+                sensorType: s.deviceSensorType as sensorDescription['sensorType'],
+                sensorUsage: s.deviceSensorUsage as sensorDescription['sensorUsage'],
+                siunit: s.deviceSensorSIUnit,
+                symbol: s.deviceSensorSymbol,
+                type: 'sensor',
+                updateInterval: 10,
+            });
+            sensorSetting.push({
+                group: s.color,
+                minPushInterval: 2,
+                changesOnlyInterval: 0,
+            });
+        });
+
+        return {
+            name: Config.name,
+            deviceType: Config.deviceType,
+            watchStateID: watchStateID,
+            modifiers: sensorModifiers,
+            id: `${genDSUID(5)}_${genDSUID(5)}`,
+            dsConfig: {
+                dSUID: genDSUID(34),
+                primaryGroup: Config.color,
+                name: Config.name,
+                configURL: Config.configUrl,
+                modelFeatures: {},
+                displayId: '',
+                model: 'ioBroker',
+                modelUID: genDSUID(34),
+                modelVersion: '0.0.1',
+                vendorName: 'KYUKA',
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                sensorDescriptions: sensorDescription,
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                sensorSettings: sensorSetting,
+                watchStateIDs: watchStateID,
+            },
+        };
+    }
+
     return null;
 };
