@@ -25,7 +25,6 @@ export const Row: React.FC<RowCreateProps> = ({ row, refreshDevices }): JSX.Elem
     const [open, setOpen] = React.useState(false);
     const { translate: _ } = useI18n();
 
-    console.log('ROW', row);
     const removeDevice = async (row: ioBroker.Object) => {
         await api.removeDevice(row);
         refreshDevices();

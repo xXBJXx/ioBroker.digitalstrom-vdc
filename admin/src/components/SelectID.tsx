@@ -58,7 +58,7 @@ export const SelectID: React.FC<SelectIDProps> = ({ title, type, buttonTitle, on
                 fullWidth
                 size="small"
                 sx={{
-                    marginTop: '10px',
+                    marginTop: '15px',
                 }}
                 inputProps={{
                     readOnly: true,

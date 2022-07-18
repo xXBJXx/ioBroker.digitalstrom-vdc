@@ -11,7 +11,7 @@ export default function DefineResolution() {
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setName(event.target.value);
         console.log(event.target.value);
-        Config.deviceSensorResolution = event.target.value;
+        Config.deviceSensorResolution = Number(event.target.value);
     };
 
     return (

@@ -44,11 +44,7 @@ const Root: React.FC = () => {
     const { translate: _ } = useI18n();
     const [themeName] = useIoBrokerTheme();
 
-    const handleTabChange = (
-        // eslint-disable-next-line @typescript-eslint/ban-types
-        event: React.ChangeEvent<{}>,
-        newValue: number,
-    ) => {
+    const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
 
