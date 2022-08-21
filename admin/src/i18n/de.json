@@ -79,7 +79,7 @@
   "nameComponent-name": "Name zuweisen",
   "rowCreate-listDevicesDetails": "Digitalstrom Details",
   "rowCreate-listDevicesRemoveButton": "Gerät löschen",
-  "rowCreate-removeInfo": "Bist du sicher das du das Gerät löschen wilsst?",
+  "rowCreate-removeInfo": "Bist du sicher, dass du %s löschen willst?",
   "rowCreate-remove_device": "Gerät löschen?",
   "selectID-selectedID": "",
   "sensorComponent-sensorSelectButton": "Sensor DP auswählen",

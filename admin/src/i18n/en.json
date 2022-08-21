@@ -79,7 +79,7 @@
   "nameComponent-name": "Assign name",
   "rowCreate-listDevicesDetails": "Digitalstrom details",
   "rowCreate-listDevicesRemoveButton": "Delete device",
-  "rowCreate-removeInfo": "Are you sure you want to delete the %s?",
+  "rowCreate-removeInfo": "Are you sure you want to delete %s?",
   "rowCreate-remove_device": "Delete device?",
   "selectID-selectedID": "Selected ID",
   "sensorComponent-sensorSelectButton": "Select Sensor DP",

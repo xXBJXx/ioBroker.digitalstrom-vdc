@@ -79,7 +79,7 @@
   "nameComponent-name": "Assegnazione del nome",
   "rowCreate-listDevicesDetails": "Dettagli Digitalstrom",
   "rowCreate-listDevicesRemoveButton": "Elimina il dispositivo",
-  "rowCreate-removeInfo": "Sei sicuro di voler eliminare il %s?",
+  "rowCreate-removeInfo": "Sei sicuro di voler cancellare %s?",
   "rowCreate-remove_device": "Cancellare il dispositivo?",
   "selectID-selectedID": "",
   "sensorComponent-sensorSelectButton": "",

@@ -79,7 +79,7 @@
   "nameComponent-name": "Naam toekennen",
   "rowCreate-listDevicesDetails": "Digitalstrom details",
   "rowCreate-listDevicesRemoveButton": "Verwijder toestel",
-  "rowCreate-removeInfo": "Weet je zeker dat je de %s wilt verwijderen?",
+  "rowCreate-removeInfo": "Weet je zeker dat je %s wilt verwijderen?",
   "rowCreate-remove_device": "Apparaat verwijderen?",
   "selectID-selectedID": "",
   "sensorComponent-sensorSelectButton": "",

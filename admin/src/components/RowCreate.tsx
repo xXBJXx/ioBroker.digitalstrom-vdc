@@ -80,7 +80,7 @@ export const Row: React.FC<RowCreateProps> = ({ row, refreshDevices }): JSX.Elem
                             console.log('click to remove', row);
                             const result = await showModal(
                                 _('rowCreate-remove_device'),
-                                `${_('rowCreate-removeInfo')} «${row.common.name}»?`,
+                                _('rowCreate-removeInfo', row.common.name as string),
                             );
                             if (!result) return;
                             await removeDevice(row);
