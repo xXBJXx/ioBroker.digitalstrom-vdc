@@ -886,7 +886,7 @@ class DigitalstromVdc extends utils.Adapter {
           try {
             const deviceObj = obj.message;
             this.log.debug(JSON.stringify(deviceObj));
-            this.setObjectNotExistsAsync(`DS-Devices.configuredDevices.${deviceObj.id}`, {
+            await this.setObjectNotExistsAsync(`DS-Devices.configuredDevices.${deviceObj.id}`, {
               type: "state",
               common: {
                 name: deviceObj.name,
@@ -924,6 +924,12 @@ class DigitalstromVdc extends utils.Adapter {
           this.log.debug(`Device ${JSON.stringify(obj.message)} successfully removed`);
           this.allDevices = await this.refreshDeviceList();
           return respond(responses.OK);
+        }
+        case "getHostIp": {
+          this.log.debug(`getHostIp command received`);
+          const hostObj = await this.getForeignObjectAsync(`system.host.${this.host}`);
+          const ipv4 = hostObj == null ? void 0 : hostObj.common.address.filter((ip) => ip.includes("."));
+          return respond(responses.RESULT(ipv4));
         }
       }
     }

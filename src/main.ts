@@ -37,13 +37,6 @@ class DigitalstromVdc extends utils.Adapter {
     private async onReady(): Promise<void> {
         // Initialize your adapter here
 
-        // The adapters config (in the instance object everything under the attribute "native") is accessible via
-        // this.config:
-        /* this.log.info("config option1: " + this.config.option1);
-        this.log.info("config option2: " + this.config.option2);
-        this.log.info("config option3: " + this.config.dsDevices);
-        this.log.info("config option3: " + this.config.vdcName); */
-
         this.setState('info.connection', false, true);
 
         /*
@@ -64,13 +57,6 @@ class DigitalstromVdc extends utils.Adapter {
                 Name: 'running',
             },
         });
-
-        /* this.allDevices = await this.getObjectListAsync(null).then((devices) => {
-            this.log.debug(`OBJECT OBJECT OBJECT \n\n\n ${JSON.stringify(devices)}`);
-            return devices;
-        });*/
-
-        //TODO: wider aktivieren
 
         this.allDevices = await this.refreshDeviceList();
 
@@ -97,7 +83,7 @@ class DigitalstromVdc extends utils.Adapter {
         // this.subscribeStates("testVariable");
         // You can also add a subscription for multiple states. The following line watches all states starting with "lights."
         // this.subscribeStates("lights.*");
-        // Or, if you really must, you can also watch all states. Don't do this if you don't need to. Otherwise this will cause a lot of unnecessary load on the system:
+        // Or, if you really must, you can also watch all states. Don't do this if you don't need to. Otherwise, this will cause a lot of unnecessary load on the system:
         // this.subscribeStates("*");
 
         /*
@@ -167,7 +153,7 @@ class DigitalstromVdc extends utils.Adapter {
                         if (affectedDevice) {
                             // found the device -> it's an update for the device
                             if (affectedDevice.deviceType == 'rgbLamp') {
-                                // it's an update for an rgb lamp
+                                // it's an update for a rgb lamp
                                 if (msg.channelId == 'x' || msg.channelId == 'y') {
                                     // we have an CIE situation here
                                 } else {
@@ -216,7 +202,7 @@ class DigitalstromVdc extends utils.Adapter {
                     if (affectedDevice) {
                         // found the device -> it's an update for the device
                         if (affectedDevice.deviceType == 'rgbLamp') {
-                            // it's an update for an rgb lamp
+                            // it's an update for a rgb lamp
                             if (msg.channelId == 'x' || msg.channelId == 'y') {
                                 // we have an CIE situation here
                             } else {
@@ -411,9 +397,7 @@ class DigitalstromVdc extends utils.Adapter {
                                 if (!affectedDevice.scenes) {
                                     affectedDevice.scenes = [];
                                 }
-                                /* if (!affectedDevice.scenes[msg.scene]) {
-                                    affectedDevice.scenes[msg.scene] = {};
-                                } */
+
                                 // delete scene first
                                 let dC = false;
 
@@ -429,12 +413,6 @@ class DigitalstromVdc extends utils.Adapter {
                                         break;
                                 }
                                 sceneVals[key] = { value: state.val, dontCare: dC }; // TODO understand and make it dynamic
-
-                                /*this.log.debug(
-                                    `Set scene ${msg.scene} on key ${key} to value ${state.val} ::: ${JSON.stringify(
-                                        this.config.dsDevices,
-                                    )}`,
-                                );*/
                             }
                             affectedDevice.scenes = affectedDevice.scenes.filter((d: any) => d.sceneId != msg.scene);
                             affectedDevice.scenes.push({ sceneId: msg.scene, values: sceneVals });
@@ -475,19 +453,11 @@ class DigitalstromVdc extends utils.Adapter {
                                 if (!affectedDevice.scenes) {
                                     affectedDevice.scenes = [];
                                 }
-                                /* if (!affectedDevice.scenes[msg.scene]) {
-                                    affectedDevice.scenes[msg.scene] = {};
-                                } */
+
                                 // delete scene first
                                 const dC = false;
 
                                 sceneVals[key] = { value: state.val, dontCare: dC }; // TODO understand and make it dynamic
-
-                                /*this.log.debug(
-                                    `Set scene ${msg.scene} on key ${key} to value ${state.val} ::: ${JSON.stringify(
-                                        this.config.dsDevices,
-                                    )}`,
-                                );*/
                             }
 
                             affectedDevice.scenes = affectedDevice.scenes.filter((d: any) => d.sceneId != msg.scene);
@@ -647,6 +617,7 @@ class DigitalstromVdc extends utils.Adapter {
                     this.log.info('msg value from state: ' + msg.value);
                     vdc.sendState(msg.value, msg.messageId);
                 } else if (affectedDevice && affectedDevice.deviceType == 'rgbLamp') {
+                    //TODO: Wouldn't a 'for of' loop be better here? WebStorm thinks so! Greeting Issi
                     msg.names.forEach(async (e: any) => {
                         this.log.debug(`searching state on ${affectedDevice.name} for state ${e}`);
                         let affectedState = affectedDevice.watchStateID[e];
@@ -1035,6 +1006,7 @@ class DigitalstromVdc extends utils.Adapter {
         }
     }
 
+    // TODO: This function is not used, should be checked, if not, required delete Greeting issi
     private async replyMultiSensor(affectedDevice: any): Promise<void> {
         const elements: Array<any> = [];
         for (const [key, value] of Object.entries(affectedDevice.watchStateID)) {
@@ -1249,7 +1221,7 @@ class DigitalstromVdc extends utils.Adapter {
         const respond = (response: any): void => {
             if (obj.callback) this.sendTo(obj.from, obj.command, response, obj.callback);
         };
-        // some predefined responses so we only have to define them once
+        // some predefined responses, so we only have to define them once
         const responses = {
             ACK: { error: null },
             OK: { error: null, result: 'ok' },
@@ -1269,7 +1241,7 @@ class DigitalstromVdc extends utils.Adapter {
                     try {
                         const deviceObj = obj.message as any;
                         this.log.debug(JSON.stringify(deviceObj));
-                        this.setObjectNotExistsAsync(`DS-Devices.configuredDevices.${deviceObj.id}`, {
+                        await this.setObjectNotExistsAsync(`DS-Devices.configuredDevices.${deviceObj.id}`, {
                             type: 'state',
                             common: {
                                 name: deviceObj.name,
@@ -1310,13 +1282,14 @@ class DigitalstromVdc extends utils.Adapter {
                     this.allDevices = await this.refreshDeviceList();
                     return respond(responses.OK);
                 }
+                case 'getHostIp': {
+                    this.log.debug(`getHostIp command received`);
+                    const hostObj = await this.getForeignObjectAsync(`system.host.${this.host}`);
+                    const ipv4 = hostObj?.common.address.filter((ip: string) => ip.includes('.'));
+                    return respond(responses.RESULT(ipv4));
+                }
             }
-            // 		if (obj.command === 'send') {
-            // 			// e.g. send email or pushover or whatever
-            // 			this.log.info('send command');
-            // 			// Send response in callback if required
-            // 			if (obj.callback) this.sendTo(obj.from, obj.command, 'Message received', obj.callback);
-            // 		}
+
             /* TODO check old stuff from other brancch!
 
 			            if (obj.command === "send") {
