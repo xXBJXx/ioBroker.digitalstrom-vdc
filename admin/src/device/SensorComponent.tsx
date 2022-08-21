@@ -6,18 +6,16 @@ import { SelectID } from '../components/SelectID';
 import { Button, Grid } from '@mui/material';
 import { handleSelectId } from '../lib/handleSelectID';
 import { SensorConfigModal } from '../modal/SensorConfigModal';
+import { useI18n } from 'iobroker-react/hooks';
 
-export interface SensorComponentProps {
-    //props
-}
-
-export const SensorComponent: React.FC<SensorComponentProps> = (): JSX.Element => {
-    const [selectId, setSelectId] = React.useState<string | undefined>('');
+export const SensorComponent = (): JSX.Element => {
+    const { translate: _ } = useI18n();
+    const [idObj, setSelectIdObj] = React.useState<{ id: string; index?: number }>({ id: '', index: 0 });
     const [open, setOpen] = React.useState(false);
 
     return (
         <React.Fragment>
-            <SensorConfigModal open={open} onClose={() => setOpen(false)} selectId={selectId} />
+            <SensorConfigModal open={open} onClose={() => setOpen(false)} selectId={idObj} sensorType={'sensor'} />
             <Grid
                 container
                 spacing={1}
@@ -32,16 +30,18 @@ export const SensorComponent: React.FC<SensorComponentProps> = (): JSX.Element =
                 }}
             >
                 <SelectID
-                    title={'sensorSelectID'}
+                    title={'sensorComponent-sensorSelectID'}
                     type={'sensor'}
-                    buttonTitle={'sensorSelectButton'}
+                    buttonTitle={'sensorComponent-sensorSelectButton'}
                     onSelect={(selectId, type) => {
-                        handleSelectId(selectId, type);
-                        setSelectId(selectId);
+                        if (selectId !== undefined) {
+                            handleSelectId(selectId, type);
+                            setSelectIdObj({ id: selectId });
+                        }
                     }}
                 />
             </Grid>
-            {selectId !== '' ? (
+            {idObj.id !== '' ? (
                 <Grid
                     container
                     spacing={1}
@@ -57,7 +57,7 @@ export const SensorComponent: React.FC<SensorComponentProps> = (): JSX.Element =
                 >
                     <React.Fragment>
                         <Button variant={'outlined'} onClick={() => setOpen(!open)}>
-                            Sensor Config
+                            {_('sensorComponent-sensor_config')}
                         </Button>
                     </React.Fragment>
                 </Grid>

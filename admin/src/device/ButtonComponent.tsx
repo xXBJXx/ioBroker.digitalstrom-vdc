@@ -1,14 +1,14 @@
 /**
  * Created by alex-issi on 15.07.22
  */
-import React, { useEffect } from 'react';
-import { NameComponent } from '../components/NameComponent';
+import React from 'react';
 import { SelectID } from '../components/SelectID';
 import { Button, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup } from '@mui/material';
 import { handleSelectId } from '../lib/handleSelectID';
 import { createDevice } from '../lib/create_dsDevice';
 import { API } from '../lib/useAPI';
 import { Config } from '../lib/Config';
+import { useI18n } from 'iobroker-react/hooks';
 
 export interface ButtonComponentProps {
     api: API;
@@ -17,12 +17,13 @@ export interface ButtonComponentProps {
 }
 
 export const ButtonComponent: React.FC<ButtonComponentProps> = ({ api, clearInput }): JSX.Element => {
+    const { translate: _ } = useI18n();
     const [clearSelect, setClearSelect] = React.useState(false);
     const [deviceType, setDeviceType] = React.useState({
         type: 'button',
         function: '6',
     });
-    useEffect(() => {
+    React.useEffect(() => {
         Config.deviceType = 'button';
     }, []);
 
@@ -36,7 +37,6 @@ export const ButtonComponent: React.FC<ButtonComponentProps> = ({ api, clearInpu
     };
     return (
         <React.Fragment>
-            <NameComponent />
             <Grid
                 container
                 spacing={1}
@@ -57,12 +57,12 @@ export const ButtonComponent: React.FC<ButtonComponentProps> = ({ api, clearInpu
                                 textAlign: 'center',
                             }}
                         >
-                            Device Type
+                            {_('buttonComponent-device_type')}
                         </FormLabel>
                         <RadioGroup
                             row
                             aria-labelledby="device-type-label"
-                            name="Device Type"
+                            name={_('buttonComponent-device_type')}
                             value={deviceType.function}
                             onChange={handleChangeFunctionType}
                         >
@@ -72,7 +72,7 @@ export const ButtonComponent: React.FC<ButtonComponentProps> = ({ api, clearInpu
                                     fontSize: '1.2rem',
                                 }}
                                 control={<Radio />}
-                                label="on-off"
+                                label={_('buttonComponent-RadioGroup-on-off')}
                             />
                             <FormControlLabel
                                 value="1"
@@ -80,7 +80,7 @@ export const ButtonComponent: React.FC<ButtonComponentProps> = ({ api, clearInpu
                                     fontSize: '1.2rem',
                                 }}
                                 control={<Radio />}
-                                label="single"
+                                label={_('buttonComponent-RadioGroup-single')}
                             />
                             <FormControlLabel
                                 value="2"
@@ -88,7 +88,7 @@ export const ButtonComponent: React.FC<ButtonComponentProps> = ({ api, clearInpu
                                     fontSize: '1.2rem',
                                 }}
                                 control={<Radio />}
-                                label="2-way"
+                                label={_('buttonComponent-RadioGroup-2-way')}
                             />
                             <FormControlLabel
                                 value="3"
@@ -96,7 +96,7 @@ export const ButtonComponent: React.FC<ButtonComponentProps> = ({ api, clearInpu
                                     fontSize: '1.2rem',
                                 }}
                                 control={<Radio />}
-                                label="4-way"
+                                label={_('buttonComponent-RadioGroup-4-way')}
                             />
                         </RadioGroup>
                     </FormControl>
@@ -116,9 +116,9 @@ export const ButtonComponent: React.FC<ButtonComponentProps> = ({ api, clearInpu
                 }}
             >
                 <SelectID
-                    title={'buttonSelectID'}
+                    title={'buttonComponent-SelectID'}
                     type={'button0'}
-                    buttonTitle={'buttonSelectIDButton'}
+                    buttonTitle={'buttonComponent-SelectIDButton'}
                     clear={clearSelect}
                     onSelect={(selectId, type) => {
                         handleSelectId(selectId, type);
@@ -126,9 +126,9 @@ export const ButtonComponent: React.FC<ButtonComponentProps> = ({ api, clearInpu
                 />
                 {deviceType.function === '2' ? (
                     <SelectID
-                        title={'buttonSelectID1'}
+                        title={'buttonComponent-SelectID1'}
                         type={'button1'}
-                        buttonTitle={'buttonSelectIDButton'}
+                        buttonTitle={'buttonComponent-SelectIDButton'}
                         clear={clearSelect}
                         onSelect={(selectId, type) => {
                             handleSelectId(selectId, type);
@@ -138,27 +138,27 @@ export const ButtonComponent: React.FC<ButtonComponentProps> = ({ api, clearInpu
                 {deviceType.function === '3' ? (
                     <React.Fragment>
                         <SelectID
-                            title={'buttonSelectID1'}
+                            title={'buttonComponent-SelectID2'}
                             type={'button1'}
-                            buttonTitle={'buttonSelectIDButton'}
+                            buttonTitle={'buttonComponent-SelectIDButton'}
                             clear={clearSelect}
                             onSelect={(selectId, type) => {
                                 handleSelectId(selectId, type);
                             }}
                         />
                         <SelectID
-                            title={'buttonSelectID2'}
+                            title={'buttonComponent-SelectID3'}
                             type={'button2'}
-                            buttonTitle={'buttonSelectIDButton'}
+                            buttonTitle={'buttonComponent-SelectIDButton'}
                             clear={clearSelect}
                             onSelect={(selectId, type) => {
                                 handleSelectId(selectId, type);
                             }}
                         />
                         <SelectID
-                            title={'buttonSelectID3'}
+                            title={'buttonComponent-SelectID4'}
                             type={'button3'}
-                            buttonTitle={'buttonSelectIDButton'}
+                            buttonTitle={'buttonComponent-SelectIDButton'}
                             clear={clearSelect}
                             onSelect={(selectId, type) => {
                                 handleSelectId(selectId, type);
@@ -187,7 +187,7 @@ export const ButtonComponent: React.FC<ButtonComponentProps> = ({ api, clearInpu
                     }}
                     variant="outlined"
                 >
-                    Add New Device
+                    {_('add_new_device')}
                 </Button>
             </Grid>
         </React.Fragment>

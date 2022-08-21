@@ -1,31 +1,29 @@
 import Box from '@material-ui/core/Box';
-import { makeStyles } from '@material-ui/core/styles';
 import React from 'react';
+import { Typography } from '@mui/material';
 
 interface TabPanelProps {
     children?: React.ReactNode;
-    index: any;
-    value: any;
+    index: number;
+    value: number;
 }
-
-const useStyles = makeStyles((_theme) => ({
-    tabpanel: {
-        flex: 1,
-        position: 'relative',
-        '& > *': {
-            width: '100%',
-            height: '100%',
-        },
-    },
-}));
 
 export const TabPanel: React.FC<TabPanelProps> = (props) => {
     const { children, value, index, ...other } = props;
-    const classes = useStyles();
 
     return (
-        <div className={classes.tabpanel} role="tabpanel" hidden={value !== index} {...other}>
-            {value === index && <Box p={3}>{children}</Box>}
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box sx={{ p: 3 }}>
+                    <Typography>{children}</Typography>
+                </Box>
+            )}
         </div>
     );
 };

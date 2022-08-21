@@ -49,7 +49,6 @@ export type dsConfig = {
     binaryInputSettings?: [binaryInputSetting];
     buttonInputDescriptions?: [buttonInputDescription];
     buttonInputSettings?: [buttonInputSetting];
-    watchStateIDs: watchStateID;
 };
 
 /**

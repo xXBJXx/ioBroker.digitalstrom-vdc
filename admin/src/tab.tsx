@@ -11,9 +11,9 @@ import { Box, Tab, Tabs } from '@mui/material';
 
 // Components are imported here
 import { TabPanel } from './components/TabPanel';
-import { ListDevices } from './pages/ListDevices';
 import { ConnectionHeader } from './components/ConnectionHeader';
-import { SelectDeviceType } from './options/DeviceTypeOptions';
+import { SelectDeviceType } from './pages/DeviceTypeOptions';
+import { ListDevices } from './pages/ListDevices';
 
 // Load your translations
 const translations: Translations = {
@@ -30,13 +30,21 @@ const translations: Translations = {
 };
 
 function ErrorFallback({ error, resetErrorBoundary }: any) {
+    const { translate: _ } = useI18n();
     return (
         <div role="alert">
-            <p>Something went wrong:</p>
+            <p>{_('errorFallback-wrong')}</p>
             <pre>{error.stack}</pre>
-            <button onClick={resetErrorBoundary}>Try again</button>
+            <button onClick={resetErrorBoundary}>{_('errorFallback-again')}</button>
         </div>
     );
+}
+
+function a11yProps(tabName: string, index: number) {
+    return {
+        id: `${tabName}-tab-${index}`,
+        'aria-controls': `${tabName}-tabpanel-${index}`,
+    };
 }
 
 const Root: React.FC = () => {
@@ -65,24 +73,20 @@ const Root: React.FC = () => {
                                 },
                             }}
                         >
-                            <Tab label={_('tabListDevices')} />
-                            <Tab label={_('tabAddNewDevices')} />
-                            {/*<Tab label={_('tabExperts')} />*/}
+                            <Tab label={_('tabs-tabListDevices')} {...a11yProps('tabListDevices', 0)} />
+                            <Tab label={_('tabs-tabAddNewDevices')} {...a11yProps('tabAddNewDevices', 1)} />
                         </Tabs>
                     </Box>
-                    <TabPanel value={value} index={0}>
+                    <TabPanel value={value} index={1}>
                         <ErrorBoundary FallbackComponent={ErrorFallback}>
                             <ListDevices />
                         </ErrorBoundary>
                     </TabPanel>
-                    <TabPanel value={value} index={1}>
+                    <TabPanel value={value} index={0}>
                         <ErrorBoundary FallbackComponent={ErrorFallback}>
                             <SelectDeviceType />
                         </ErrorBoundary>
                     </TabPanel>
-                    {/*<TabPanel value={value} index={2}>*/}
-                    {/*    <ErrorBoundary FallbackComponent={ErrorFallback}>Experts</ErrorBoundary>*/}
-                    {/*</TabPanel>*/}
                 </Box>
             </ThemeProvider>
         </React.Fragment>

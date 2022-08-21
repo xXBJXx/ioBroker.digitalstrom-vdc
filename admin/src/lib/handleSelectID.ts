@@ -1,7 +1,7 @@
 import { SelectType } from '../types/selectType';
 import { Config } from './Config';
 
-export const handleSelectId = (select: string | undefined, deviceType: SelectType) => {
+export const handleSelectId = (select: string | undefined, deviceType: SelectType): void => {
     console.log(`Type: ${deviceType} ID: ${select} `);
     if (deviceType === 'lamp') {
         if (select !== undefined) {
@@ -95,17 +95,10 @@ export const handleSelectId = (select: string | undefined, deviceType: SelectTyp
             console.log(Config);
         }
     }
-    if (deviceType === 'presenceSensor') {
+    if (deviceType === 'binarySensor') {
         if (select !== undefined) {
-            console.log('presenceSensor');
-            Config.presenceSensorSelectID = select;
-            console.log(Config);
-        }
-    }
-    if (deviceType === 'smokeAlarm') {
-        if (select !== undefined) {
-            console.log('smokeAlarm');
-            Config.smokeAlarmSelectID = select;
+            console.log('binarySensor');
+            Config.binarySensorSelectID = select;
             console.log(Config);
         }
     }

@@ -1,15 +1,15 @@
 /**
  * Created by alex-issi on 15.07.22
  */
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Button, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup } from '@mui/material';
-import { MultiSensor } from './MultiSensorComponent';
-import { NameComponent } from '../components/NameComponent';
+import { MultiSensorComponent } from './MultiSensorComponent';
 import { createDevice } from '../lib/create_dsDevice';
 import { API } from '../lib/useAPI';
-import { PresenceSensorComponent } from './PresenceSensorComponent';
 import { Config } from '../lib/Config';
 import { SensorComponent } from './SensorComponent';
+import { BinarySensorComponent } from './BinarySensorComponent';
+import { useI18n } from 'iobroker-react/hooks';
 
 export interface SensorProps {
     api: API;
@@ -17,12 +17,13 @@ export interface SensorProps {
     //props
 }
 
-export const Sensor: React.FC<SensorProps> = ({ api, clearInput }): JSX.Element => {
+export const SensorComponents: React.FC<SensorProps> = ({ api, clearInput }): JSX.Element => {
+    const { translate: _ } = useI18n();
     const [deviceType, setDeviceType] = React.useState({
         type: 'sensor',
     });
 
-    useEffect(() => {
+    React.useEffect(() => {
         Config.deviceType = 'sensor';
     }, []);
 
@@ -36,7 +37,6 @@ export const Sensor: React.FC<SensorProps> = ({ api, clearInput }): JSX.Element 
 
     return (
         <React.Fragment>
-            <NameComponent />
             <Grid
                 container
                 spacing={1}
@@ -57,12 +57,12 @@ export const Sensor: React.FC<SensorProps> = ({ api, clearInput }): JSX.Element 
                             }}
                             id="device-type-label"
                         >
-                            Device Type
+                            {_('sensorComponents-device_type')}
                         </FormLabel>
                         <RadioGroup
                             row
                             aria-labelledby="device-type-label"
-                            name="Device Type"
+                            name={_('sensorComponents-device_type')}
                             value={deviceType.type}
                             onChange={handleChangeType}
                         >
@@ -72,15 +72,15 @@ export const Sensor: React.FC<SensorProps> = ({ api, clearInput }): JSX.Element 
                                     fontSize: '1.2rem',
                                 }}
                                 control={<Radio />}
-                                label="Sensor"
+                                label={_('sensorComponents-sensor')}
                             />
                             <FormControlLabel
-                                value="presenceSensor"
+                                value="binarySensor"
                                 sx={{
                                     fontSize: '1.2rem',
                                 }}
                                 control={<Radio />}
-                                label="presence Sensor"
+                                label={_('sensorComponents-binary_sensor')}
                             />
                             <FormControlLabel
                                 value="multiSensor"
@@ -88,7 +88,7 @@ export const Sensor: React.FC<SensorProps> = ({ api, clearInput }): JSX.Element 
                                     fontSize: '1.2rem',
                                 }}
                                 control={<Radio />}
-                                label="multi Sensor"
+                                label={_('sensorComponents-multi_sensor')}
                             />
                         </RadioGroup>
                     </FormControl>
@@ -99,14 +99,14 @@ export const Sensor: React.FC<SensorProps> = ({ api, clearInput }): JSX.Element 
                     <SensorComponent />
                 </React.Fragment>
             ) : null}
-            {deviceType.type === 'presenceSensor' ? (
+            {deviceType.type === 'binarySensor' ? (
                 <React.Fragment>
-                    <PresenceSensorComponent />
+                    <BinarySensorComponent />
                 </React.Fragment>
             ) : null}
             {deviceType.type === 'multiSensor' ? (
                 <React.Fragment>
-                    <MultiSensor />
+                    <MultiSensorComponent />
                 </React.Fragment>
             ) : null}
             <Grid
@@ -130,7 +130,7 @@ export const Sensor: React.FC<SensorProps> = ({ api, clearInput }): JSX.Element 
                     }}
                     variant="outlined"
                 >
-                    Add New Device
+                    {_('add_new_device')}
                 </Button>
             </Grid>
         </React.Fragment>

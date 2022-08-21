@@ -1,14 +1,14 @@
 /**
  * Created by alex-issi on 16.07.22
  */
-import React, { useEffect } from 'react';
-import { NameComponent } from '../components/NameComponent';
+import React from 'react';
 import { Button, Grid } from '@mui/material';
 import { API } from '../lib/useAPI';
 import { createDevice } from '../lib/create_dsDevice';
 import { SelectID } from '../components/SelectID';
 import { handleSelectId } from '../lib/handleSelectID';
 import { Config } from '../lib/Config';
+import { useI18n } from 'iobroker-react/hooks';
 
 export interface DoorbellComponentProps {
     api: API;
@@ -17,7 +17,8 @@ export interface DoorbellComponentProps {
 }
 
 export const DoorbellComponent: React.FC<DoorbellComponentProps> = ({ api, clearInput }): JSX.Element => {
-    useEffect(() => {
+    const { translate: _ } = useI18n();
+    React.useEffect(() => {
         Config.deviceType = 'doorbell';
     }, []);
 
@@ -27,7 +28,6 @@ export const DoorbellComponent: React.FC<DoorbellComponentProps> = ({ api, clear
 
     return (
         <React.Fragment>
-            <NameComponent />
             <Grid
                 container
                 spacing={1}
@@ -42,9 +42,9 @@ export const DoorbellComponent: React.FC<DoorbellComponentProps> = ({ api, clear
                 }}
             >
                 <SelectID
-                    title={'doorbellSelectID'}
+                    title={'doorbellComponent-SelectID'}
                     type={'doorbell'}
-                    buttonTitle={'doorbellSelectButton'}
+                    buttonTitle={'doorbellComponent-SelectButton'}
                     onSelect={(selectId, type) => handleSelectId(selectId, type)}
                 />
             </Grid>
@@ -72,7 +72,7 @@ export const DoorbellComponent: React.FC<DoorbellComponentProps> = ({ api, clear
                     }}
                     variant="outlined"
                 >
-                    Add New Device
+                    {_('add_new_device')}
                 </Button>
             </Grid>
         </React.Fragment>

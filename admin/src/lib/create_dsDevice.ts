@@ -1,13 +1,21 @@
 import { Config } from './Config';
 import { genDSUID } from './genDSUID';
-import { dsDevice, watchStateID, sensorDescription, sensorSetting, modifiers } from '../types/dsDevice';
+import {
+    binaryInputDescription,
+    binaryInputSetting,
+    dsDevice,
+    modifiers,
+    sensorDescription,
+    sensorSetting,
+    watchStateID,
+} from '../types/dsDevice';
 
 export const createDevice = (deviceType: { type: string; function?: string }): dsDevice | null => {
     if (deviceType.type === 'lamp') {
         const device: dsDevice = {
             name: Config.name,
             deviceType: Config.deviceType,
-            watchStateID: { switch: Config.OnOffSelectID },
+            watchStateID: { light: Config.OnOffSelectID },
             id: `${genDSUID(5)}_${genDSUID(5)}`,
             dsConfig: {
                 dSUID: genDSUID(34),
@@ -69,7 +77,6 @@ export const createDevice = (deviceType: { type: string; function?: string }): d
                         groups: [1],
                     },
                 ],
-                watchStateIDs: { switch: Config.OnOffSelectID },
             },
         };
         if (deviceType.function !== undefined) {
@@ -233,15 +240,6 @@ export const createDevice = (deviceType: { type: string; function?: string }): d
                         groups: [1],
                     },
                 ],
-                watchStateIDs: {
-                    switch: Config.OnOffSelectID,
-                    switchModeColor: Config.ColorModeSelectID,
-                    brightness: Config.DimmerSelectID,
-                    colortemp: Config.ColorTempSelectID,
-                    hue: Config.HueSelectID,
-                    saturation: Config.SaturationSelectID,
-                    rgb: Config.RGBSelectID,
-                },
             },
         };
     }
@@ -291,9 +289,6 @@ export const createDevice = (deviceType: { type: string; function?: string }): d
                         objName: 'button_0',
                     },
                 ],
-                watchStateIDs: {
-                    button_0: Config.buttonSelectID,
-                },
             },
         };
         if (deviceType.function !== undefined) {
@@ -305,18 +300,14 @@ export const createDevice = (deviceType: { type: string; function?: string }): d
             if (parseFloat(deviceType.function) === 2) {
                 if (device.dsConfig.buttonInputDescriptions) {
                     device.dsConfig.buttonInputDescriptions[0].buttonType = 2;
-                    device.dsConfig.watchStateIDs.button_1 = Config.buttonSelectID1;
                     device.watchStateID.button_1 = Config.buttonSelectID1;
                 }
             }
             if (parseFloat(deviceType.function) === 3) {
                 if (device.dsConfig.buttonInputDescriptions) {
                     device.dsConfig.buttonInputDescriptions[0].buttonType = 3;
-                    device.dsConfig.watchStateIDs.button_1 = Config.buttonSelectID1;
                     device.watchStateID.button_1 = Config.buttonSelectID1;
-                    device.dsConfig.watchStateIDs.button_2 = Config.buttonSelectID2;
                     device.watchStateID.button_2 = Config.buttonSelectID2;
-                    device.dsConfig.watchStateIDs.button_3 = Config.buttonSelectID3;
                     device.watchStateID.button_3 = Config.buttonSelectID3;
                 }
             }
@@ -373,9 +364,6 @@ export const createDevice = (deviceType: { type: string; function?: string }): d
                         objName: 'button_0',
                     },
                 ],
-                watchStateIDs: {
-                    button_0: Config.doorbellSelectID,
-                },
             },
         };
     }
@@ -425,17 +413,14 @@ export const createDevice = (deviceType: { type: string; function?: string }): d
                         objName: 'button_0',
                     },
                 ],
-                watchStateIDs: {
-                    button_0: Config.awayButtonSelectID,
-                },
             },
         };
     }
-    if (deviceType.type === 'presenceSensor') {
-        const device: dsDevice = {
+    if (deviceType.type === 'binarySensor') {
+        return {
             name: Config.name,
             deviceType: Config.deviceType,
-            watchStateID: { generic_0: Config.presenceSensorSelectID },
+            watchStateID: { generic_0: Config.binarySensorSelectID },
             id: `${genDSUID(5)}_${genDSUID(5)}`,
             dsConfig: {
                 dSUID: genDSUID(34),
@@ -456,9 +441,9 @@ export const createDevice = (deviceType: { type: string; function?: string }): d
                         objName: 'generic_0',
                         dsIndex: 0,
                         inputType: 0,
-                        inputUsage: 0,
+                        inputUsage: Config.deviceInputUsage as binaryInputDescription['inputUsage'],
                         updateInterval: 0,
-                        sensorFunction: 5,
+                        sensorFunction: Config.deviceSensorFunction as binaryInputDescription['sensorFunction'],
                         type: 'binaryInput',
                     },
                 ],
@@ -466,96 +451,11 @@ export const createDevice = (deviceType: { type: string; function?: string }): d
                     {
                         group: 8,
                         objName: 'generic_0',
-                        sensorFunction: 5,
+                        sensorFunction: Config.deviceSensorFunction as binaryInputSetting['sensorFunction'],
                     },
                 ],
-                watchStateIDs: {
-                    generic_0: Config.presenceSensorSelectID,
-                },
             },
         };
-        if (Config.deviceSensorUsage !== undefined) {
-            if (Config.deviceSensorUsage === 0) {
-                if (device.dsConfig.binaryInputDescriptions) {
-                    device.dsConfig.binaryInputDescriptions[0].inputUsage = 0;
-                }
-            }
-            if (Config.deviceSensorUsage === 1) {
-                if (device.dsConfig.binaryInputDescriptions) {
-                    device.dsConfig.binaryInputDescriptions[0].inputUsage = 1;
-                }
-            }
-            if (Config.deviceSensorUsage === 2) {
-                if (device.dsConfig.binaryInputDescriptions) {
-                    device.dsConfig.binaryInputDescriptions[0].inputUsage = 2;
-                }
-            }
-        }
-        return device;
-    }
-    if (deviceType.type === 'smokeAlarm') {
-        const device: dsDevice = {
-            name: Config.name,
-            deviceType: Config.deviceType,
-            watchStateID: { generic_0: Config.smokeAlarmSelectID },
-            id: `${genDSUID(5)}_${genDSUID(5)}`,
-            dsConfig: {
-                dSUID: genDSUID(34),
-                primaryGroup: 8,
-                name: Config.name,
-                configURL: Config.configUrl,
-                modelFeatures: {
-                    highlevel: true,
-                    jokerconfig: true,
-                    akmsensor: true,
-                },
-                displayId: '',
-                model: 'ioBroker',
-                modelUID: genDSUID(34),
-                modelVersion: '0.0.1',
-                vendorName: 'KYUKA',
-                binaryInputDescriptions: [
-                    {
-                        objName: 'generic_0',
-                        dsIndex: 0,
-                        inputType: 0,
-                        inputUsage: 0,
-                        sensorFunction: 7,
-                        updateInterval: 0,
-                        type: 'binaryInput',
-                    },
-                ],
-                binaryInputSettings: [
-                    {
-                        group: 8,
-                        sensorFunction: 7,
-                        objName: 'generic_0',
-                    },
-                ],
-                watchStateIDs: {
-                    generic_0: Config.smokeAlarmSelectID,
-                },
-            },
-        };
-
-        if (Config.deviceSensorUsage !== undefined) {
-            if (Config.deviceSensorUsage === 0) {
-                if (device.dsConfig.binaryInputDescriptions) {
-                    device.dsConfig.binaryInputDescriptions[0].inputUsage = 0;
-                }
-            }
-            if (Config.deviceSensorUsage === 1) {
-                if (device.dsConfig.binaryInputDescriptions) {
-                    device.dsConfig.binaryInputDescriptions[0].inputUsage = 1;
-                }
-            }
-            if (Config.deviceSensorUsage === 2) {
-                if (device.dsConfig.binaryInputDescriptions) {
-                    device.dsConfig.binaryInputDescriptions[0].inputUsage = 2;
-                }
-            }
-        }
-        return device;
     }
     if (deviceType.type === 'sensor') {
         return {
@@ -594,7 +494,6 @@ export const createDevice = (deviceType: { type: string; function?: string }): d
                         updateInterval: 0,
                     },
                 ],
-                watchStateIDs: { sensor_0: Config.sensorSelectID },
             },
         };
     }
@@ -605,7 +504,7 @@ export const createDevice = (deviceType: { type: string; function?: string }): d
         const sensorModifiers: modifiers = {};
         Config.sensorList.forEach((s, i) => {
             watchStateID[`sensor_${i}`] = s.selectSensor;
-            sensorModifiers[`sensor_${i}`] = s.modifier;
+            sensorModifiers[`sensor_${i}`] = s.sensorMultiplier;
             sensorDescription.push({
                 objName: `sensor_${i}`,
                 aliveSignInterval: 0,
@@ -651,10 +550,8 @@ export const createDevice = (deviceType: { type: string; function?: string }): d
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
                 sensorSettings: sensorSetting,
-                watchStateIDs: watchStateID,
             },
         };
     }
-
     return null;
 };

@@ -12,6 +12,6 @@ export type SelectType =
     | 'button2'
     | 'button3'
     | 'doorbell'
-    | 'presenceSensor'
+    | 'binarySensor'
     | 'smokeAlarm'
     | 'awayButton';

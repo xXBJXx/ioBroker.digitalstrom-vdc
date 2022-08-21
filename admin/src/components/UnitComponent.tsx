@@ -14,7 +14,7 @@ interface UnitOption {
 const unitsOption: UnitOption[] = [
     {
         value: { symbol: '', unit: 'none' },
-        title: 'SelectUnit',
+        title: 'unitsOption-Unit',
         disabled: true,
     },
     {
@@ -62,16 +62,31 @@ const unitsOption: UnitOption[] = [
         title: 'mm/m2',
     },
 ];
+interface UnitProps {
+    sensorType: 'sensor' | 'multiSensor';
+    index?: number;
+}
 
-export const UnitComponent = (): JSX.Element => {
+export const UnitComponent: React.FC<UnitProps> = ({ sensorType, index }): JSX.Element => {
     const { translate: _ } = useI18n();
-    const [units, setUnits] = React.useState('SelectUnit');
+    const [units, setUnits] = React.useState('unitsOption-Unit');
     const handleChange = (event: SelectChangeEvent) => {
         const selectedUnit = unitsOption.find((unit) => unit.title === event.target.value);
         setUnits(event.target.value);
         Config.deviceSensorSIUnit = event.target.value;
         if (selectedUnit) {
             Config.deviceSensorSymbol = selectedUnit.value.symbol;
+        }
+    };
+    const handleMultiChange = (event: SelectChangeEvent) => {
+        const selectedUnit = unitsOption.find((unit) => unit.title === event.target.value);
+        setUnits(event.target.value);
+        if (index !== undefined) {
+            Config.sensorList[index].deviceSensorSIUnit = event.target.value;
+            console.log(Config.sensorList[index]);
+            if (selectedUnit) {
+                Config.sensorList[index].deviceSensorSymbol = selectedUnit.value.symbol;
+            }
         }
     };
 
@@ -94,21 +109,31 @@ export const UnitComponent = (): JSX.Element => {
                         marginTop: '15px',
                     }}
                 >
-                    <InputLabel id="Unit-select-label">Units</InputLabel>
+                    <InputLabel id="Unit-select-label">{_('unitComponent-units-select')}</InputLabel>
                     <Select
                         labelId="Units-select-label"
                         id="Units-select"
                         value={units}
-                        label="Units"
-                        onChange={handleChange}
+                        label={_('unitComponent-units-select')}
+                        onChange={(event) => {
+                            if (sensorType === 'sensor') {
+                                handleChange(event);
+                            } else if (sensorType === 'multiSensor') {
+                                handleMultiChange(event);
+                            }
+                        }}
                     >
                         {unitsOption.map((option, index) => (
                             <MenuItem
                                 key={`key-${option.title}-${index}`}
                                 disabled={unitsOption[index].disabled}
                                 value={option.title}
+                                divider
+                                sx={{
+                                    justifyContent: 'center',
+                                }}
                             >
-                                {option.title}
+                                {_(option.title)}
                             </MenuItem>
                         ))}
                     </Select>

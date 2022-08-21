@@ -36,10 +36,6 @@ const SettingsPageContent: React.FC = React.memo(() => {
     const genDSUID = () => {
         const genRanHex = (size: number) =>
             [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
-        // const instanceName = `${this.props.adapterName}.${this.props.instance}`;
-        /*this.props.socket.sendTo(instanceName, "genSDUID", "blah").then((response) => {
-        console.log(response);
-    });*/
         handleChange('vdcDSUID', genRanHex(34).toUpperCase());
     };
 
@@ -47,8 +43,8 @@ const SettingsPageContent: React.FC = React.memo(() => {
         if (settings.vdcDSUID && settings.vdcDSUID.length > 0) return null;
         return (
             <Alert sx={{ marginTop: 1 }} severity="warning">
-                <AlertTitle>{_('noDSUIDTitle')}</AlertTitle>
-                {_('noDSUIDText')}
+                <AlertTitle>{_('settingsPageContent-showNoDSUID-noDSUIDTitle')}</AlertTitle>
+                {_('settingsPageContent-showNoDSUID-noDSUIDText')}
             </Alert>
         );
     };
@@ -57,11 +53,11 @@ const SettingsPageContent: React.FC = React.memo(() => {
         <div>
             <Grid container sx={{ marginTop: 4 }}>
                 <Grid item xs={1}>
-                    <Avatar alt="Digitalstrom VDC" src="digitalstrom-vdc.png" />
+                    <Avatar alt={_('settingsPageContent-digitalstrom_vdc')} src="digitalstrom-vdc.png" />
                 </Grid>
                 <Grid item xs={11}>
                     <h3>
-                        <strong>{_('pageTitle')}</strong>
+                        <strong>{_('settingsPageContent-pageTitle')}</strong>
                     </h3>
                 </Grid>
             </Grid>
@@ -70,13 +66,12 @@ const SettingsPageContent: React.FC = React.memo(() => {
             <Box sx={{ marginTop: 1, p: 2, border: '1px grey' }}>
                 <Grid container sx={{ marginTop: 4 }}>
                     <Grid item xs={12} sm={6}>
-                        <Tooltip title={_('vdcNameTooltip')} arrow>
+                        <Tooltip title={_('settingsPageContent-vdcNameTooltip')} arrow>
                             <TextField
-                                label={_('vdcName')}
+                                label={_('settingsPageContent-vdcName')}
                                 color="success"
                                 sx={{ width: '100%', textAlignLast: 'left' }}
                                 value={settings.vdcName}
-                                placeholder="placeholder"
                                 onChange={(event) => {
                                     handleChange('vdcName', event.target.value);
                                 }}
@@ -84,10 +79,10 @@ const SettingsPageContent: React.FC = React.memo(() => {
                         </Tooltip>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <Tooltip title={_('vdcConfigURLTooltip')} arrow>
+                        <Tooltip title={_('settingsPageContent-vdcConfigURLTooltip')} arrow>
                             <TextField
                                 fullWidth
-                                label={_('vdcConfigURL')}
+                                label={_('settingsPageContent-vdcConfigURL')}
                                 color="success"
                                 sx={{ width: '100%', textAlignLast: 'left' }}
                                 value={settings.vdcConfigURL}
@@ -101,13 +96,13 @@ const SettingsPageContent: React.FC = React.memo(() => {
                 </Grid>
                 <Grid container sx={{ marginTop: 4 }}>
                     <Grid item xs={12} sm={6}>
-                        <Tooltip title={_('vdcPortTooltip')} arrow>
+                        <Tooltip title={_('settingsPageContent-vdcPortTooltip')} arrow>
                             <TextField
-                                label={_('vdcPort')}
+                                label={_('settingsPageContent-vdcPort')}
                                 color="success"
                                 sx={{ width: '100%', textAlignLast: 'left' }}
                                 value={settings.vdcPort}
-                                placeholder="placeholder"
+                                placeholder="40000"
                                 onChange={(event) => {
                                     handleChange('vdcPort', parseInt(event.target.value));
                                 }}
@@ -116,13 +111,13 @@ const SettingsPageContent: React.FC = React.memo(() => {
                     </Grid>
                     <Grid container xs={12} sm={6}>
                         <Grid item xs={8}>
-                            <Tooltip title={_('vdcDSUIDTooltip')} arrow>
+                            <Tooltip title={_('settingsPageContent-vdcDSUIDTooltip')} arrow>
                                 <TextField
-                                    label={_('vdcDSUID')}
+                                    label={_('settingsPageContent-vdcDSUID')}
                                     color="success"
                                     sx={{ width: '100%', textAlignLast: 'left' }}
                                     value={settings.vdcDSUID}
-                                    placeholder="placeholder"
+                                    placeholder="7B1AFCEFC228E408508CACB3B2044499BE"
                                     onChange={(event) => {
                                         handleChange('vdcDSUID', event.target.value);
                                     }}
@@ -136,7 +131,7 @@ const SettingsPageContent: React.FC = React.memo(() => {
                                 }}
                                 variant="outlined"
                             >
-                                {_('generateVDCDSUID')}
+                                {_('settingsPageContent-generateVDCDSUID')}
                             </Button>
                         </Grid>
                     </Grid>
@@ -171,8 +166,6 @@ const translations: Translations = {
 };
 
 const Root: React.FC = () => {
-    // const [themeName, setTheme] = useIoBrokerTheme();
-
     return (
         <ThemeProvider theme={theme(themeName)}>
             <SettingsApp name="digitalstrom-vdc" afterLoad={migrateSettings} translations={translations}>

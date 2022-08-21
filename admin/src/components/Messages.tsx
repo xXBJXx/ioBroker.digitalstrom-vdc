@@ -14,10 +14,10 @@ export const Message: React.FC<{ severity: Severity }> = ({ children, severity }
 
 export const NotRunning: React.FC = () => {
     const { translate: _ } = useI18n();
-    return <Message severity="error">{_('adapter not ready')}</Message>;
+    return <Message severity="error">{_('message-adapter_not_ready')}</Message>;
 };
 
 export const NoDevices: React.FC = () => {
     const { translate: _ } = useI18n();
-    return <Message severity="info">{_('No devices present')}</Message>;
+    return <Message severity="info">{_('message-no_devices_present')}</Message>;
 };

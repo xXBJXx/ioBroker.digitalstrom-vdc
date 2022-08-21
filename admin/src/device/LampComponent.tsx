@@ -1,28 +1,29 @@
 /**
  * Created by alex-issi on 13.07.22
  */
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Button, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup } from '@mui/material';
 import { SelectID } from '../components/SelectID';
 import { handleSelectId } from '../lib/handleSelectID';
 import { API } from '../lib/useAPI';
 import { Config } from '../lib/Config';
 import { createDevice } from '../lib/create_dsDevice';
-import { NameComponent } from '../components/NameComponent';
+import { useI18n } from 'iobroker-react/hooks';
 
-export interface LampProps {
+export interface LampComponentProps {
     api: API;
     clearInput: () => void;
 }
 
-export const Lamp: React.FC<LampProps> = ({ api, clearInput }): JSX.Element => {
+export const LampComponent: React.FC<LampComponentProps> = ({ api, clearInput }): JSX.Element => {
+    const { translate: _ } = useI18n();
     const [clear, setClear] = React.useState(false);
     const [deviceType, setDeviceType] = React.useState({
         type: 'lamp',
         function: '0',
     });
 
-    useEffect(() => {
+    React.useEffect(() => {
         Config.deviceType = 'lamp';
     }, []);
 
@@ -42,7 +43,6 @@ export const Lamp: React.FC<LampProps> = ({ api, clearInput }): JSX.Element => {
 
     return (
         <React.Fragment>
-            <NameComponent />
             <Grid
                 container
                 spacing={1}
@@ -63,12 +63,12 @@ export const Lamp: React.FC<LampProps> = ({ api, clearInput }): JSX.Element => {
                             }}
                             id="device-type-label"
                         >
-                            Device Type
+                            {_('lampComponent-device_type')}
                         </FormLabel>
                         <RadioGroup
                             row
                             aria-labelledby="device-type-label"
-                            name="Device Type"
+                            name={_('lampComponent-device_type')}
                             value={deviceType.type}
                             onChange={handleChangeType}
                         >
@@ -78,7 +78,7 @@ export const Lamp: React.FC<LampProps> = ({ api, clearInput }): JSX.Element => {
                                     fontSize: '1.2rem',
                                 }}
                                 control={<Radio />}
-                                label="Lamp"
+                                label={_('lampComponent-lamp')}
                             />
                             <FormControlLabel
                                 value="rgbLamp"
@@ -86,7 +86,7 @@ export const Lamp: React.FC<LampProps> = ({ api, clearInput }): JSX.Element => {
                                     fontSize: '1.2rem',
                                 }}
                                 control={<Radio />}
-                                label="rgb-Lamp"
+                                label={_('lampComponent-rgb_lamp')}
                             />
                         </RadioGroup>
                     </FormControl>
@@ -114,12 +114,12 @@ export const Lamp: React.FC<LampProps> = ({ api, clearInput }): JSX.Element => {
                                     }}
                                     id="device-type-label"
                                 >
-                                    Type
+                                    {_('lampComponent-type')}
                                 </FormLabel>
                                 <RadioGroup
                                     row
                                     aria-labelledby="device-type-label"
-                                    name="Device Type"
+                                    name={_('lampComponent-device_type')}
                                     value={deviceType.function}
                                     onChange={handleChangeFunctionType}
                                 >
@@ -129,7 +129,7 @@ export const Lamp: React.FC<LampProps> = ({ api, clearInput }): JSX.Element => {
                                             fontSize: '1.2rem',
                                         }}
                                         control={<Radio />}
-                                        label="On/Off Lamp"
+                                        label={_('lampComponent-on_off_lamp')}
                                     />
                                     <FormControlLabel
                                         value="1"
@@ -137,7 +137,7 @@ export const Lamp: React.FC<LampProps> = ({ api, clearInput }): JSX.Element => {
                                             fontSize: '1.2rem',
                                         }}
                                         control={<Radio />}
-                                        label="Dimmer Lamp"
+                                        label={_('lampComponent-dimmer_lamp')}
                                     />
                                     <FormControlLabel
                                         value="3"
@@ -145,7 +145,7 @@ export const Lamp: React.FC<LampProps> = ({ api, clearInput }): JSX.Element => {
                                             fontSize: '1.2rem',
                                         }}
                                         control={<Radio />}
-                                        label="Color temperature Lamp"
+                                        label={_('lampComponent-color_temperature_lamp')}
                                     />
                                 </RadioGroup>
                             </FormControl>
@@ -165,17 +165,17 @@ export const Lamp: React.FC<LampProps> = ({ api, clearInput }): JSX.Element => {
                         }}
                     >
                         <SelectID
-                            title={'OnOffSelectID'}
+                            title={'lampComponent-onOffSelectID'}
                             type={'lamp'}
-                            buttonTitle={'onOffSelectID'}
+                            buttonTitle={'lampComponent-onOffSelectButton'}
                             clear={clear}
                             onSelect={(selectId, type) => handleSelectId(selectId, type)}
                         />
                         {deviceType.function === '1' ? (
                             <SelectID
-                                title={'DimmerSelectID'}
+                                title={'lampComponent-dimmerSelectID'}
                                 type={'dimmer'}
-                                buttonTitle={'dimmerSelectID'}
+                                buttonTitle={'lampComponent-dimmerSelectButton'}
                                 clear={clear}
                                 onSelect={(selectId, type) => handleSelectId(selectId, type)}
                             />
@@ -183,16 +183,16 @@ export const Lamp: React.FC<LampProps> = ({ api, clearInput }): JSX.Element => {
                         {deviceType.function === '3' ? (
                             <React.Fragment>
                                 <SelectID
-                                    title={'DimmerSelectID'}
+                                    title={'lampComponent-dimmerSelectID'}
                                     type={'dimmer'}
-                                    buttonTitle={'dimmerSelectID'}
+                                    buttonTitle={'lampComponent-dimmerSelectButton'}
                                     clear={clear}
                                     onSelect={(selectId, type) => handleSelectId(selectId, type)}
                                 />
                                 <SelectID
-                                    title={'ColorTempSelectID'}
+                                    title={'lampComponent-colorTempSelectID'}
                                     type={'colorTemp'}
-                                    buttonTitle={'colorTempSelectID'}
+                                    buttonTitle={'lampComponent-colorTempSelectButton'}
                                     clear={clear}
                                     onSelect={(selectId, type) => handleSelectId(selectId, type)}
                                 />
@@ -216,16 +216,16 @@ export const Lamp: React.FC<LampProps> = ({ api, clearInput }): JSX.Element => {
                         }}
                     >
                         <SelectID
-                            title={'OnOffSelectID'}
+                            title={'lampComponent-onOffSelectID'}
                             type={'lamp'}
-                            buttonTitle={'onOffSelectID'}
+                            buttonTitle={'lampComponent-onOffSelectButton'}
                             clear={clear}
                             onSelect={(selectId, type) => handleSelectId(selectId, type)}
                         />
                         <SelectID
-                            title={'DimmerSelectID'}
+                            title={'lampComponent-dimmerSelectID'}
                             type={'dimmer'}
-                            buttonTitle={'dimmerSelectID'}
+                            buttonTitle={'lampComponent-dimmerSelectButton'}
                             clear={clear}
                             onSelect={(selectId, type) => handleSelectId(selectId, type)}
                         />
@@ -244,16 +244,16 @@ export const Lamp: React.FC<LampProps> = ({ api, clearInput }): JSX.Element => {
                         }}
                     >
                         <SelectID
-                            title={'ColorModeSelectID'}
+                            title={'lampComponent-colorModeSelectID'}
                             type={'colorMode'}
-                            buttonTitle={'colorModeSelectID'}
+                            buttonTitle={'lampComponent-colorModeSelectButton'}
                             clear={clear}
                             onSelect={(selectId, type) => handleSelectId(selectId, type)}
                         />
                         <SelectID
-                            title={'ColorTempSelectID'}
+                            title={'lampComponent-colorTempSelectID'}
                             type={'colorTemp'}
-                            buttonTitle={'colorTempSelectID'}
+                            buttonTitle={'lampComponent-colorTempSelectButton'}
                             clear={clear}
                             onSelect={(selectId, type) => handleSelectId(selectId, type)}
                         />
@@ -272,23 +272,23 @@ export const Lamp: React.FC<LampProps> = ({ api, clearInput }): JSX.Element => {
                         }}
                     >
                         <SelectID
-                            title={'HueSelectID'}
+                            title={'lampComponent-hueSelectID'}
                             type={'hue'}
-                            buttonTitle={'hueSelectID'}
+                            buttonTitle={'lampComponent-hueSelectButton'}
                             clear={clear}
                             onSelect={(selectId, type) => handleSelectId(selectId, type)}
                         />
                         <SelectID
-                            title={'SaturationSelectID'}
+                            title={'lampComponent-saturationSelectID'}
                             type={'saturation'}
-                            buttonTitle={'saturationSelectID'}
+                            buttonTitle={'lampComponent-saturationSelectButton'}
                             clear={clear}
                             onSelect={(selectId, type) => handleSelectId(selectId, type)}
                         />
                         <SelectID
-                            title={'RGBSelectID'}
+                            title={'lampComponent-rgbSelectID'}
                             type={'rgbLamp'}
-                            buttonTitle={'rgbSelectID'}
+                            buttonTitle={'lampComponent-rgbSelectButton'}
                             clear={clear}
                             onSelect={(selectId, type) => handleSelectId(selectId, type)}
                         />
@@ -311,13 +311,11 @@ export const Lamp: React.FC<LampProps> = ({ api, clearInput }): JSX.Element => {
                 <Button
                     onClick={async () => {
                         await api.createDevice(createDevice(deviceType));
-                        console.log(Config);
                         handleClear();
-                        console.log(Config);
                     }}
                     variant="outlined"
                 >
-                    Add New Device
+                    {_('add_new_device')}
                 </Button>
             </Grid>
         </React.Fragment>

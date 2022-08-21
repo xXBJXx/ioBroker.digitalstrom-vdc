@@ -1,7 +1,7 @@
 import { colorGroup } from '../types/dsDevice';
-interface SensorList {
+export interface SensorList {
     selectSensor: string;
-    modifier: number;
+    sensorMultiplier: number;
     deviceSensorMax: number;
     deviceSensorMin: number;
     deviceSensorSIUnit: string;
@@ -25,7 +25,9 @@ interface Config {
     deviceSensorResolution: number;
     DeviceSensorState: string;
     deviceSensorType: number;
+    deviceSensorFunction: number;
     deviceSensorUsage: number;
+    deviceInputUsage: number;
     deviceSensorMax: number;
     deviceSensorMin: number;
     deviceSensorSIUnit: string;
@@ -59,7 +61,7 @@ interface Config {
     buttonSelectID3: string;
     doorbellSelectID: string;
     awayButtonSelectID: string;
-    presenceSensorSelectID: string;
+    binarySensorSelectID: string;
     smokeAlarmSelectID: string;
 }
 
@@ -67,7 +69,7 @@ export const initialConfig = {
     deviceConfig: {
         light: false,
         addDeviceDeviceType: '',
-        configUrl: 'http://localhost:8081',
+        configUrl: '',
         name: '',
         deviceType: '',
         color: 1,
@@ -77,7 +79,9 @@ export const initialConfig = {
         DeviceSensorColorClass: '',
         DeviceSensorState: '',
         deviceSensorType: 0,
+        deviceSensorFunction: 0,
         deviceSensorUsage: 0,
+        deviceInputUsage: 0,
         deviceSensorMax: 0,
         deviceSensorMin: 0,
         deviceSensorSIUnit: '',
@@ -96,7 +100,7 @@ export const initialConfig = {
         DeviceRGBLampRGB: '',
         sensorList: [],
         unitValue: '',
-        sensorMultiplier: 0,
+        sensorMultiplier: 1,
         OnOffSelectID: '',
         ColorModeSelectID: '',
         ColorTempSelectID: '',
@@ -111,14 +115,14 @@ export const initialConfig = {
         buttonSelectID3: '',
         doorbellSelectID: '',
         awayButtonSelectID: '',
-        presenceSensorSelectID: '',
+        binarySensorSelectID: '',
         smokeAlarmSelectID: '',
     },
 };
 
 export let Config: Config = {
     light: false,
-    configUrl: 'http://localhost:8081',
+    configUrl: '',
     name: '',
     deviceType: '',
     color: 1,
@@ -129,7 +133,9 @@ export let Config: Config = {
     deviceSensorResolution: 0,
     DeviceSensorState: '',
     deviceSensorType: 0,
+    deviceSensorFunction: 0,
     deviceSensorUsage: 0,
+    deviceInputUsage: 0,
     deviceSensorMax: 0,
     deviceSensorMin: 0,
     deviceSensorSIUnit: '',
@@ -148,7 +154,7 @@ export let Config: Config = {
     DeviceRGBLampRGB: '',
     sensorList: [],
     unitValue: '',
-    sensorMultiplier: 0,
+    sensorMultiplier: 1,
     OnOffSelectID: '',
     ColorModeSelectID: '',
     ColorTempSelectID: '',
@@ -163,7 +169,7 @@ export let Config: Config = {
     buttonSelectID3: '',
     doorbellSelectID: '',
     awayButtonSelectID: '',
-    presenceSensorSelectID: '',
+    binarySensorSelectID: '',
     smokeAlarmSelectID: '',
 };
 

@@ -2,11 +2,10 @@
  * Created by alex-issi on 12.07.22
  */
 import { useI18n } from 'iobroker-react/hooks';
-import * as React from 'react';
+import React from 'react';
 import { useDialogs } from 'iobroker-react';
 import { Box, Button, TextField } from '@mui/material';
 import { SelectType } from '../types/selectType';
-import { useEffect } from 'react';
 
 export interface SelectIDProps {
     title: string;
@@ -21,7 +20,7 @@ export const SelectID: React.FC<SelectIDProps> = ({ title, type, buttonTitle, on
     const { translate: _ } = useI18n();
     const { showSelectId } = useDialogs();
 
-    useEffect(() => {
+    React.useEffect(() => {
         setSelectIdValue('');
     }, [clear]);
 
@@ -53,7 +52,7 @@ export const SelectID: React.FC<SelectIDProps> = ({ title, type, buttonTitle, on
                 {_(`${buttonTitle}`)}
             </Button>
             <TextField
-                label="Selected ID"
+                label={_('selectID-selectedID')}
                 value={selectIdValue ? selectIdValue : ''}
                 fullWidth
                 size="small"

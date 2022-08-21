@@ -4,20 +4,28 @@
 import React from 'react';
 import { useI18n } from 'iobroker-react/hooks';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from '@mui/material';
-import { SensorTypeComponent } from '../components/SensorTypeComponent';
-import { ColorClassComponent } from '../components/ColorClassComponent';
+import { SensorType } from '../components/SensorType';
+import { ColorClass } from '../components/ColorClass';
 import { NumberInput } from '../components/NumberInput';
 import { UnitComponent } from '../components/UnitComponent';
-import { SensorUsageComponent } from '../components/SensorUsageComponent';
+import { SensorUsage } from '../components/SensorUsage';
 
 export interface SensorConfigModalProps {
     open: boolean;
     onClose: () => void;
-    selectId: string | undefined;
+    selectId: { id: string; index?: number };
+    sensorType: 'sensor' | 'multiSensor';
+    success?: (index: number) => void;
     //props
 }
 
-export const SensorConfigModal: React.FC<SensorConfigModalProps> = ({ open, onClose, selectId }): JSX.Element => {
+export const SensorConfigModal: React.FC<SensorConfigModalProps> = ({
+    open,
+    onClose,
+    selectId,
+    sensorType,
+    success,
+}): JSX.Element => {
     const { translate: _ } = useI18n();
 
     return (
@@ -25,8 +33,6 @@ export const SensorConfigModal: React.FC<SensorConfigModalProps> = ({ open, onCl
             <Dialog
                 open={open}
                 onClose={onClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
                 PaperProps={{
                     sx: {
                         maxWidth: 'lg',
@@ -35,7 +41,7 @@ export const SensorConfigModal: React.FC<SensorConfigModalProps> = ({ open, onCl
                 }}
             >
                 <DialogTitle align={'center'} id="alert-dialog-title">
-                    {_('sensorConfig', selectId ? selectId : '')}
+                    {_('sensorConfigModal-sensorConfig', selectId.id ? selectId.id : '')}
                 </DialogTitle>
                 <DialogContent>
                     <Grid
@@ -45,22 +51,54 @@ export const SensorConfigModal: React.FC<SensorConfigModalProps> = ({ open, onCl
                             justifyContent: 'space-around',
                         }}
                     >
-                        <SensorTypeComponent />
-                        <ColorClassComponent />
-                        <SensorUsageComponent />
-                        <UnitComponent />
+                        <SensorType sensorType={sensorType} index={selectId.index} />
+                        <ColorClass sensorType={sensorType} index={selectId.index} />
+                        <SensorUsage sensorType={sensorType} index={selectId.index} />
+                        <UnitComponent sensorType={sensorType} index={selectId.index} />
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-                            <NumberInput label={'maxValue'} type={'deviceSensorMax'} />
-                            <NumberInput label={'minValue'} type={'deviceSensorMin'} />
-                            <NumberInput label={'resolution'} type={'deviceSensorResolution'} />
-                            <NumberInput label={'multiplier'} type={'sensorMultiplier'} />
+                            <NumberInput
+                                label={_('sensorConfigModal-maxValue')}
+                                type={'deviceSensorMax'}
+                                sensorType={sensorType}
+                                index={selectId.index}
+                            />
+                            <NumberInput
+                                label={_('sensorConfigModal-minValue')}
+                                type={'deviceSensorMin'}
+                                sensorType={sensorType}
+                                index={selectId.index}
+                            />
+                            <NumberInput
+                                label={_('sensorConfigModal-resolution')}
+                                type={'deviceSensorResolution'}
+                                sensorType={sensorType}
+                                index={selectId.index}
+                            />
+                            <NumberInput
+                                label={_('sensorConfigModal-multiplier')}
+                                type={'sensorMultiplier'}
+                                sensorType={sensorType}
+                                index={selectId.index}
+                            />
                         </Box>
                     </Grid>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={onClose}>{_('cancel')}</Button>
-                    <Button onClick={onClose} autoFocus>
-                        {_('success')}
+                    <Button onClick={onClose}>{_('sensorConfigModal-cancel')}</Button>
+                    <Button
+                        onClick={() => {
+                            if (success) {
+                                if (selectId.index !== undefined) {
+                                    if (selectId.index === 0 || selectId.index !== 0) {
+                                        success(selectId.index);
+                                    }
+                                }
+                            }
+                            onClose();
+                        }}
+                        autoFocus
+                    >
+                        {_('sensorConfigModal-success')}
                     </Button>
                 </DialogActions>
             </Dialog>

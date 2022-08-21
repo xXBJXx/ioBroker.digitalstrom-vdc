@@ -55,6 +55,13 @@ export class API {
         if (error) throw error;
         return result ?? [];
     }
+
+    public async getHostIp(): Promise<string> {
+        const { error, result } = await this.connection.sendTo<SendToResult<string[]>>(this.namespace, 'getHostIp');
+        if (error) throw error;
+        console.log('getHostIp', result);
+        return result ? result[0] : '';
+    }
 }
 
 /** Hook to communicate with the adapter via sendTo calls */

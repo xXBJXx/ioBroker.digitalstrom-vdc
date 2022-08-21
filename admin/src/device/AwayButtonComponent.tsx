@@ -1,14 +1,14 @@
 /**
  * Created by alex-issi on 16.07.22
  */
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Config } from '../lib/Config';
-import { NameComponent } from '../components/NameComponent';
 import { Button, Grid } from '@mui/material';
 import { SelectID } from '../components/SelectID';
 import { handleSelectId } from '../lib/handleSelectID';
 import { createDevice } from '../lib/create_dsDevice';
 import { API } from '../lib/useAPI';
+import { useI18n } from 'iobroker-react/hooks';
 
 export interface AwayButtonComponentProps {
     api: API;
@@ -17,7 +17,8 @@ export interface AwayButtonComponentProps {
 }
 
 export const AwayButtonComponent: React.FC<AwayButtonComponentProps> = ({ api, clearInput }): JSX.Element => {
-    useEffect(() => {
+    const { translate: _ } = useI18n();
+    React.useEffect(() => {
         Config.deviceType = 'awayButton';
     }, []);
 
@@ -27,7 +28,6 @@ export const AwayButtonComponent: React.FC<AwayButtonComponentProps> = ({ api, c
 
     return (
         <React.Fragment>
-            <NameComponent />
             <Grid
                 container
                 spacing={1}
@@ -42,9 +42,9 @@ export const AwayButtonComponent: React.FC<AwayButtonComponentProps> = ({ api, c
                 }}
             >
                 <SelectID
-                    title={'awayButtonSelectID'}
+                    title={'awayButtonComponent-awaySelectID'}
                     type={'awayButton'}
-                    buttonTitle={'awayButtonSelectButton'}
+                    buttonTitle={'awayButtonComponent-SelectButton'}
                     onSelect={(selectId, type) => handleSelectId(selectId, type)}
                 />
             </Grid>
@@ -72,7 +72,7 @@ export const AwayButtonComponent: React.FC<AwayButtonComponentProps> = ({ api, c
                     }}
                     variant="outlined"
                 >
-                    Add New Device
+                    {_('add_new_device')}
                 </Button>
             </Grid>
         </React.Fragment>

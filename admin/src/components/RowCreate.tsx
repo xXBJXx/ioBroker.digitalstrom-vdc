@@ -47,14 +47,17 @@ export const Row: React.FC<RowCreateProps> = ({ row, refreshDevices }): JSX.Elem
         if (row.native.deviceObj.deviceType === 'sensor') {
             return <SensorsIcon />;
         }
+        if (row.native.deviceObj.deviceType === 'binarySensor') {
+            return <SensorsIcon />;
+        }
         if (row.native.deviceObj.deviceType === 'button') {
             return <GridViewIcon />;
         }
         if (row.native.deviceObj.deviceType === 'awayButton') {
             return <DirectionsRunIcon />;
         }
-        if (row.native.deviceObj.deviceType === 'smokeAlarm') {
-            return <NotificationsActiveIcon />;
+        if (row.native.deviceObj.deviceType === 'multiSensor') {
+            return <SensorsIcon />;
         }
     };
 
@@ -62,7 +65,7 @@ export const Row: React.FC<RowCreateProps> = ({ row, refreshDevices }): JSX.Elem
         <React.Fragment>
             <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
                 <TableCell>
-                    <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+                    <IconButton size="small" onClick={() => setOpen(!open)}>
                         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                     </IconButton>
                 </TableCell>
@@ -76,15 +79,15 @@ export const Row: React.FC<RowCreateProps> = ({ row, refreshDevices }): JSX.Elem
                         onClick={async () => {
                             console.log('click to remove', row);
                             const result = await showModal(
-                                _('remove device?'),
-                                `${_('are you sure you want to remove')} «${row.common.name}»?`,
+                                _('rowCreate-remove_device'),
+                                `${_('rowCreate-removeInfo')} «${row.common.name}»?`,
                             );
                             if (!result) return;
                             await removeDevice(row);
                         }}
                         variant="outlined"
                     >
-                        <DeleteOutlineIcon /> {_('listDevices-removeButton')}
+                        <DeleteOutlineIcon /> {_('rowCreate-listDevicesRemoveButton')}
                     </Button>
                 </TableCell>
             </TableRow>
@@ -93,10 +96,10 @@ export const Row: React.FC<RowCreateProps> = ({ row, refreshDevices }): JSX.Elem
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Box sx={{ margin: 1 }}>
                             <Typography variant="h6" gutterBottom component="div">
-                                {_('listDevices-watchStateHeader')}
+                                {_('rowCreate-listDevicesDetails')}
                             </Typography>
                             <pre>
-                                <code>{JSON.stringify(row.native.deviceObj.dsConfig, null, 2)}</code>
+                                <code>{JSON.stringify(row.native.deviceObj, null, 2)}</code>
                             </pre>
                         </Box>
                     </Collapse>

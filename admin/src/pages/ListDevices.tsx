@@ -1,15 +1,11 @@
-import React, { useEffect } from 'react';
-import { Device, useAPI } from '../lib/useAPI';
+import React from 'react';
+import { useAPI } from '../lib/useAPI';
 import { NoDevices } from '../components/Messages';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { useI18n } from 'iobroker-react/hooks';
 import { Row } from '../components/RowCreate';
 
-export interface DevicesProps {
-    devices: Record<number, Device> | undefined;
-}
-
-export const ListDevices: React.FC = () => {
+export const ListDevices = () => {
     // init
     const [devices, setDevices] = React.useState<string[]>([]);
     const api = useAPI();
@@ -22,7 +18,7 @@ export const ListDevices: React.FC = () => {
     }, [api]);
 
     // load device array
-    useEffect(() => {
+    React.useEffect(() => {
         (async () => {
             console.log('refreshing devices');
             await refreshDevices();
@@ -33,7 +29,7 @@ export const ListDevices: React.FC = () => {
     return (
         <div id="ListDevices">
             <TableContainer component={Paper} elevation={2}>
-                <Table aria-label="collapsible table">
+                <Table>
                     <TableHead>
                         <TableRow>
                             <TableCell />
