@@ -14,6 +14,13 @@
 Mit dem VDC Adpater für Digitalstrom werden im Digitalstrom Ökosystem virtuelle Devices erstellt.
 Diese können unteranderem zb. Temperatursensoren, Fenster/Türkontakte und Lampen sein.
 So kann fast jedes beliebige Gerät aus IoBroker in Digitalstrom erzeugt werden.
+Es werden zb:  - die gelbe Klemme
+	       - die graue Klemme
+	       - die blaue Klemme
+	       - die rote Klemme
+	       - die schwarze Klemme 
+	       - die weiße Klemme unterstützt.
+	       
 
 - Adding ioBroker datapoints / devices directly into digitalstrom
 
