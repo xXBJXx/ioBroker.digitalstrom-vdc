@@ -439,6 +439,7 @@ export const createDevice = (deviceType: { type: string; function?: string }): d
                 binaryInputDescriptions: [
                     {
                         objName: 'generic_0',
+                        name: 'generic_0',
                         dsIndex: 0,
                         inputType: 0,
                         inputUsage: Config.deviceInputUsage as binaryInputDescription['inputUsage'],
@@ -450,6 +451,7 @@ export const createDevice = (deviceType: { type: string; function?: string }): d
                 binaryInputSettings: [
                     {
                         group: 8,
+                        inputName: 'generic_0',
                         objName: 'generic_0',
                         sensorFunction: Config.deviceSensorFunction as binaryInputSetting['sensorFunction'],
                     },
@@ -480,6 +482,7 @@ export const createDevice = (deviceType: { type: string; function?: string }): d
                 sensorDescriptions: [
                     {
                         objName: 'sensor_0',
+                        name: 'sensor_0',
                         aliveSignInterval: 0,
                         dsIndex: 0,
                         max: Config.deviceSensorMax,
@@ -507,6 +510,7 @@ export const createDevice = (deviceType: { type: string; function?: string }): d
             sensorModifiers[`sensor_${i}`] = s.sensorMultiplier;
             sensorDescription.push({
                 objName: `sensor_${i}`,
+                name: `sensor_${i}`,
                 aliveSignInterval: 0,
                 dsIndex: i,
                 max: s.deviceSensorMax,
@@ -524,6 +528,7 @@ export const createDevice = (deviceType: { type: string; function?: string }): d
                 group: s.color,
                 minPushInterval: 2,
                 changesOnlyInterval: 0,
+                objName: `sensor_${i}`,
             });
         });
 

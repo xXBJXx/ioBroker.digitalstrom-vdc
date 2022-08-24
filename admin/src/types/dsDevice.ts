@@ -166,6 +166,7 @@ export type buttonInputDescription = {
  */
 export type binaryInputDescription = {
     objName: string;
+    name: string;
     dsIndex: number;
     inputType: 0 | 1;
     inputUsage: 0 | 1 | 2 | 3;
@@ -225,6 +226,7 @@ export type binaryInputSetting = {
         | 21
         | 22
         | 23;
+    inputName: string;
     objName: string;
 };
 /**
@@ -391,6 +393,7 @@ export type outputDescription = {
  */
 export type sensorDescription = {
     objName: string;
+    name: string;
     dsIndex: number;
     sensorType:
         | 0
@@ -438,6 +441,7 @@ export type sensorSetting = {
     group: colorGroup;
     minPushInterval: number;
     changesOnlyInterval: number;
+    objName: string;
 };
 
 /**

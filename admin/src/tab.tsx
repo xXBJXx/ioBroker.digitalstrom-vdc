@@ -77,12 +77,12 @@ const Root: React.FC = () => {
                             <Tab label={_('tabs-tabAddNewDevices')} {...a11yProps('tabAddNewDevices', 1)} />
                         </Tabs>
                     </Box>
-                    <TabPanel value={value} index={1}>
+                    <TabPanel value={value} index={0}>
                         <ErrorBoundary FallbackComponent={ErrorFallback}>
                             <ListDevices />
                         </ErrorBoundary>
                     </TabPanel>
-                    <TabPanel value={value} index={0}>
+                    <TabPanel value={value} index={1}>
                         <ErrorBoundary FallbackComponent={ErrorFallback}>
                             <SelectDeviceType />
                         </ErrorBoundary>

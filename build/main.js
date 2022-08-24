@@ -606,6 +606,7 @@ class DigitalstromVdc extends utils.Adapter {
               value: state.val
             });
           }
+          this.log.warn("MultiSensorStates" + JSON.stringify(sensorStates));
           vdc.sendSensorStatesRequest(sensorStates, msg.messageId);
         }
       }
