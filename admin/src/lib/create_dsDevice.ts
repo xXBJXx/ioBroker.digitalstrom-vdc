@@ -268,6 +268,8 @@ export const createDevice = (deviceType: { type: string; function?: string }): d
                 vendorName: 'KYUKA',
                 buttonInputDescriptions: [
                     {
+                        objName: 'button_0',
+                        name: 'button_0',
                         buttonElementID: 0,
                         buttonID: 0,
                         buttonType: 1,
@@ -275,7 +277,6 @@ export const createDevice = (deviceType: { type: string; function?: string }): d
                         dsIndex: 0,
                         supportsLocalKeyMode: 0,
                         type: 'buttonInput',
-                        objName: 'button_0',
                     },
                 ],
                 buttonInputSettings: [
@@ -344,13 +345,14 @@ export const createDevice = (deviceType: { type: string; function?: string }): d
                 vendorName: 'KYUKA',
                 buttonInputDescriptions: [
                     {
+                        objName: 'button_0',
+                        name: 'button_0',
                         buttonElementID: 0,
                         buttonID: 0,
                         buttonType: 1,
                         dsIndex: 0,
                         supportsLocalKeyMode: 0,
                         type: 'buttonInput',
-                        objName: 'button_0',
                     },
                 ],
                 buttonInputSettings: [
@@ -392,6 +394,8 @@ export const createDevice = (deviceType: { type: string; function?: string }): d
                 vendorName: 'KYUKA',
                 buttonInputDescriptions: [
                     {
+                        objName: 'button_0',
+                        name: 'button_0',
                         buttonElementID: 0,
                         buttonID: 0,
                         buttonType: 1,
@@ -399,7 +403,6 @@ export const createDevice = (deviceType: { type: string; function?: string }): d
                         dsIndex: 0,
                         supportsLocalKeyMode: 0,
                         type: 'buttonInput',
-                        objName: 'button_0',
                     },
                 ],
                 buttonInputSettings: [
@@ -430,6 +433,7 @@ export const createDevice = (deviceType: { type: string; function?: string }): d
                 modelFeatures: {
                     highlevel: true,
                     akmsensor: true,
+                    jokerconfig: true,
                 },
                 displayId: '',
                 model: 'ioBroker',

@@ -102,7 +102,9 @@ export const ColorClass: React.FC<ColorClassProps> = ({ sensorType, index }): JS
                     }}
                 >
                     <InputLabel id="colorClassOptions-select-label">{_('colorClass-Options')}</InputLabel>
-                    <Tooltip title={_('colorClass-tooltip')} placement={'right'} arrow>
+                    {/*TODO write a ColorClass Tooltip*/}
+                    {/*<Tooltip title={${_('colorClass-tooltip')} ${_('colorClass-tooltip')}} placement={'right'} arrow>*/}
+                    <Tooltip title={_('colorClass-tooltip2')} placement={'right'} arrow>
                         <Select
                             labelId="colorClassOptions-select-label"
                             id="colorClassOptions-select"

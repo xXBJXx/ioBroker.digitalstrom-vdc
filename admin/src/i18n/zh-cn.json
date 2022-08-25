@@ -57,7 +57,7 @@
   "lampComponent-hueSelectButton": "",
   "lampComponent-hueSelectID": "",
   "lampComponent-lamp": "灯",
-  "lampComponent-onOffSelectButton": "",
+  "lampComponent-onOffSelectButton": "打开 关闭 选择DP",
   "lampComponent-onOffSelectID": "",
   "lampComponent-on_off_lamp": "",
   "lampComponent-rgbSelectButton": "",

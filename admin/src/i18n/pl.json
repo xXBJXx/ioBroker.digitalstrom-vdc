@@ -57,7 +57,7 @@
   "lampComponent-hueSelectButton": "",
   "lampComponent-hueSelectID": "",
   "lampComponent-lamp": "lampa",
-  "lampComponent-onOffSelectButton": "",
+  "lampComponent-onOffSelectButton": "ON OFF Wybierz DP",
   "lampComponent-onOffSelectID": "",
   "lampComponent-on_off_lamp": "",
   "lampComponent-rgbSelectButton": "",

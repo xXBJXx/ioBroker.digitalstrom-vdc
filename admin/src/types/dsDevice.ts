@@ -118,6 +118,7 @@ export type buttonInputSetting = {
  */
 export type buttonInputDescription = {
     objName: string;
+    name: string;
     type: 'buttonInput';
     dsIndex: number;
     supportsLocalKeyMode: number;
