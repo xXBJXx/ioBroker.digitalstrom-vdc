@@ -763,6 +763,53 @@ class DigitalstromVdc extends utils.Adapter {
                         });
                     });
                     vdc.sendBinaryInputState(inputStates, msg.messageId);
+                } else if (affectedDevice && affectedDevice.deviceType == 'binarySensor') {
+                    const elements: Array<any> = [];
+                    for (const [key, value] of Object.entries(affectedDevice.watchStateID)) {
+                        const subState = await this.getForeignStateAsync(value as string);
+                        if (subState) {
+                            elements.push({
+                                name: key as string,
+                                elements: [
+                                    { name: 'age', value: { vDouble: 1 } },
+                                    { name: 'error', value: { vUint64: '0' } },
+                                    { name: 'value', value: { vBool: subState.val } },
+                                ],
+                            });
+                        }
+                    }
+                    vdc.sendComplexState(msg.messageId, elements);
+                } else {
+                    // send generic response
+                    vdc.sendState(msg.value, msg.messageId);
+                }
+            }
+        });
+
+        vdc.on('binaryInputStateRequest', async (msg: any) => {
+            this.log.info(`received request for binaryInputStateRequest ${JSON.stringify(msg)}`);
+
+            // search if the dsUID is known
+            if (msg && msg.dSUID) {
+                const affectedDevice = this.allDevices.backEnd.find(
+                    (d: any) => d.dsConfig.dSUID.toLowerCase() == msg.dSUID.toLowerCase(),
+                );
+                this.log.debug(`found device ${JSON.stringify(affectedDevice)}`);
+                if (affectedDevice && affectedDevice.deviceType == 'binarySensor') {
+                    // const state: any = await this.getForeignStateAsync(affectedDevice.watchStateID);
+                    // const state: any = await getFState(affectedDevice.watchStateID);
+                    // this.log.info("msg value from state: " + JSON.stringify(state));
+                    // msg.value = state.val ? 1 : 0;
+                    // this.log.info("msg value from state: " + msg.value);
+                    const inputStates: Array<any> = [];
+                    affectedDevice.dsConfig.binaryInputDescriptions.forEach((i: any) => {
+                        inputStates.push({
+                            name: i.objName,
+                            age: 1,
+                            value: null,
+                        });
+                    });
+                    vdc.sendBinaryInputState(inputStates, msg.messageId);
                 } else if (affectedDevice && affectedDevice.deviceType == 'smokeAlarm') {
                     // const state: any = await this.getForeignStateAsync(affectedDevice.watchStateID);
                     // const state: any = await getFState(affectedDevice.watchStateID);
@@ -787,7 +834,7 @@ class DigitalstromVdc extends utils.Adapter {
         });
 
         vdc.on('sensorStatesRequest', async (msg: any) => {
-            // this.log.info(`received request for binaryInputStateRequest ${JSON.stringify(msg)}`);
+            //this.log.warn(`received request for SensorStatesRequest ${JSON.stringify(msg)}`);
 
             // search if the dsUID is known
             if (msg && msg.dSUID) {
@@ -870,6 +917,7 @@ class DigitalstromVdc extends utils.Adapter {
                             value: state.val,
                         });
                     }
+                    this.log.warn('MultiSensorStates' + JSON.stringify(sensorStates));
                     vdc.sendSensorStatesRequest(sensorStates, msg.messageId);
                 }
             }
@@ -1096,6 +1144,23 @@ class DigitalstromVdc extends utils.Adapter {
                         },
                     ]);
                 } else if (affectedDevice.deviceType == 'presenceSensor') {
+                    const newState = state.val ? 1 : 0;
+                    this.vdc.sendUpdate(affectedDevice.dsConfig.dSUID, [
+                        {
+                            name: 'binaryInputStates',
+                            elements: [
+                                {
+                                    name: updateName,
+                                    elements: [
+                                        { name: 'age', value: { vDouble: 1 } },
+                                        { name: 'error', value: { vUint64: '0' } },
+                                        { name: 'value', value: { vBool: newState } },
+                                    ],
+                                },
+                            ],
+                        },
+                    ]);
+                } else if (affectedDevice.deviceType == 'binarySensor') {
                     const newState = state.val ? 1 : 0;
                     this.vdc.sendUpdate(affectedDevice.dsConfig.dSUID, [
                         {
