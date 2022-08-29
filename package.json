@@ -25,7 +25,7 @@
     },
     "dependencies": {
         "@iobroker/adapter-core": "^2.6.0",
-        "libdsvdcts": "git+https://github.com/DrozmotiX/libdsvdcts.git",
+        "libdsvdcts": "git+https://bitbucket.com/dbreitenmoser/libdsvdcts.git#master",
         "rgbhelper": "git+https://bitbucket.com/dbreitenmoser/rgbhelper.git#master",
         "moment": "^2.29.3"
     },
