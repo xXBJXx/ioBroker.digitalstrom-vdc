@@ -840,6 +840,9 @@ class DigitalstromVdc extends utils.Adapter {
             }
           ]);
         } else if (affectedDevice.deviceType == "button") {
+          let newState = 0;
+          if (state && state.val >= 0 && state.val <= 14)
+            newState = state.val;
           this.vdc.sendUpdate(affectedDevice.dsConfig.dSUID, [
             {
               name: "buttonInputStates",
@@ -848,7 +851,7 @@ class DigitalstromVdc extends utils.Adapter {
                   name: updateName,
                   elements: [
                     { name: "age", value: { vDouble: 1 } },
-                    { name: "clickType", value: { vUint64: 0 } },
+                    { name: "clickType", value: { vUint64: newState } },
                     { name: "error", value: { vUint64: "0" } },
                     { name: "value", value: { vBool: 0 } }
                   ]
