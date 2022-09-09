@@ -89,44 +89,6 @@ class DigitalstromVdc extends utils.Adapter {
     });
     vdc.on("VDSM_NOTIFICATION_SET_CONTROL_VALUE", (msg) => {
       this.log.info(`received control value ${JSON.stringify(msg)}`);
-      if (msg && msg.name) {
-        if (msg && msg.dSUID) {
-          msg.dSUID.forEach((id) => {
-            const affectedDevice = this.allDevices.backEnd.find((d) => d.dsConfig.dSUID.toLowerCase() == id.toLowerCase());
-            if (affectedDevice) {
-              if (affectedDevice.deviceType == "rgbLamp") {
-                if (msg.channelId == "x" || msg.channelId == "y") {
-                } else {
-                  const affectedState = affectedDevice.watchStateID[msg.channelId];
-                  if (affectedState) {
-                    this.log.info(`Received an update for state ${affectedState} in device ${affectedDevice.name} with value ${msg.value}`);
-                    this.setForeignStateAsync(affectedState, {
-                      val: msg.value,
-                      ack: false
-                    }).then((error) => {
-                      this.log.info(`set ${affectedState} ${error}`);
-                    });
-                  }
-                }
-              }
-            } else if (msg.name === "TemperatureOutside") {
-              this.setStateAsync("DS-Devices.outdoorValues.temperature", {
-                val: msg.value,
-                ack: true
-              }).then((error) => {
-                this.log.info(`set temperature ${error}`);
-              });
-            } else if (msg.name === "BrightnessOutside") {
-              this.setStateAsync("DS-Devices.outdoorValues.brightness", {
-                val: msg.value,
-                ack: true
-              }).then((error) => {
-                this.log.info(`set brightness ${error}`);
-              });
-            }
-          });
-        }
-      }
     });
     vdc.on("VDSM_NOTIFICATION_SET_OUTPUT_CHANNEL_VALUE", (msg) => {
       this.log.info(`received OUTPUTCHANNELVALUE value ${JSON.stringify(msg)}`);
@@ -134,116 +96,39 @@ class DigitalstromVdc extends utils.Adapter {
         msg.dSUID.forEach((id) => {
           const affectedDevice = this.allDevices.backEnd.find((d) => d.dsConfig.dSUID.toLowerCase() == id.toLowerCase());
           if (affectedDevice) {
-            if (affectedDevice.deviceType == "rgbLamp") {
-              if (msg.channelId == "x" || msg.channelId == "y") {
-              } else {
-                const affectedState = affectedDevice.watchStateID[msg.channelId];
-                if (affectedState) {
-                  this.log.info(`Received an update for state ${affectedState} in device ${affectedDevice.name} with value ${msg.value} and ${msg.applyNow}`);
+            const affectedState = affectedDevice.watchStateID[msg.channelId];
+            if (affectedState) {
+              this.log.info(`Received an update for state ${affectedState} in device ${affectedDevice.name} with value ${msg.value} and ${msg.applyNow}`);
+              this.setOutputChannel.push({
+                name: msg.channelId,
+                state: affectedState,
+                value: msg.value
+              });
+              const brightness = this.setOutputChannel.find((v) => v.name == "brightness");
+              if (brightness) {
+                this.log.debug(`Brightness: ${brightness.value}`);
+                if (brightness.value == 0) {
+                  const affectedStateSwitch = affectedDevice.watchStateID["switch"];
                   this.setOutputChannel.push({
-                    name: msg.channelId,
-                    state: affectedState,
-                    value: msg.value
+                    name: "switch",
+                    state: affectedStateSwitch,
+                    value: false
                   });
-                  if (msg.applyNow) {
-                    this.setOutputChannel.push({
-                      name: msg.channelId,
-                      state: affectedState,
-                      value: msg.value
-                    });
-                    const sat = this.setOutputChannel.find((v) => v.name == "saturation");
-                    const hue = this.setOutputChannel.find((v) => v.name == "hue");
-                    const brightness = this.setOutputChannel.find((v) => v.name == "brightness");
-                    const colortemp = this.setOutputChannel.find((v) => v.name == "colortemp");
-                    if (sat && hue && brightness) {
-                      this.log.debug(`Hue: ${hue.value} Saturation: ${sat.value} Brightness: ${brightness.value}`);
-                      const rgb = import_rgbhelper.rgbhelper.hsvTOrgb(hue.value, sat.value, brightness.value);
-                      const rgbHex = import_rgbhelper.rgbhelper.rgbTOhex(rgb);
-                      this.setForeignStateAsync(affectedDevice.watchStateID["rgb"], {
-                        val: rgbHex,
-                        ack: false
-                      }).then((error) => {
-                        if (error) {
-                        } else {
-                          this.log.info(`Successful update of RGB to ${rgb} / ${rgbHex} on ${affectedDevice.name}`);
-                        }
-                      });
-                      this.setOutputChannel.forEach((c) => {
-                        this.setForeignStateAsync(c.state, {
-                          val: c.value,
-                          ack: false
-                        }).then((error) => {
-                          if (error) {
-                          } else {
-                            this.log.info(`Successful update of ${c.name} to ${c.value} on ${affectedDevice.name}`);
-                          }
-                        });
-                      });
-                      this.setForeignStateAsync(affectedDevice.watchStateID.switchModeColor, {
-                        val: true,
-                        ack: false
-                      }).then((error) => {
-                        if (error) {
-                        } else {
-                          this.log.info(`Successful update of colorMode to false on ${affectedDevice.name}`);
-                        }
-                      });
-                    } else if (brightness) {
-                      this.log.debug(`Brightness: ${brightness.value}`);
-                      if (brightness.value == 0) {
-                        const affectedStateSwitch = affectedDevice.watchStateID["switch"];
-                        this.setOutputChannel.push({
-                          name: "switch",
-                          state: affectedStateSwitch,
-                          value: false
-                        });
-                      } else {
-                        const affectedStateSwitch = affectedDevice.watchStateID["switch"];
-                        this.setOutputChannel.push({
-                          name: "switch",
-                          state: affectedStateSwitch,
-                          value: true
-                        });
-                      }
-                      this.setOutputChannel.forEach((c) => {
-                        this.setForeignStateAsync(c.state, {
-                          val: c.value,
-                          ack: false
-                        }).then((error) => {
-                          if (error) {
-                          } else {
-                            this.log.info(`Successful update of ${c.name} to ${c.value} on ${affectedDevice.name}`);
-                          }
-                        });
-                      });
-                    } else if (colortemp) {
-                      this.log.debug(`Colortemp: ${colortemp.value}`);
-                      const kelvinValue = Math.floor(1e6 / colortemp.value);
-                      this.setForeignStateAsync(affectedDevice.watchStateID.colortemp, {
-                        val: kelvinValue,
-                        ack: false
-                      }).then((error) => {
-                        if (error) {
-                        } else {
-                          this.log.info(`Successful update of colortemp to ${kelvinValue} on ${affectedDevice.name}`);
-                        }
-                      });
-                      this.setForeignStateAsync(affectedDevice.watchStateID.switchModeColor, {
-                        val: false,
-                        ack: false
-                      }).then((error) => {
-                        if (error) {
-                        } else {
-                          this.log.info(`Successful update of colorMode to false on ${affectedDevice.name}`);
-                        }
-                      });
-                    } else {
-                      this.log.error(`Could not set the color on ${affectedDevice.name} because some values where missing inside the buffer ${JSON.stringify(this.setOutputChannel)}`);
-                    }
-                    this.setOutputChannel = [];
-                  }
+                } else {
                 }
               }
+              this.setOutputChannel.forEach((c) => {
+                this.setForeignStateAsync(c.state, {
+                  val: c.value,
+                  ack: false
+                }).then((error) => {
+                  if (error) {
+                  } else {
+                    this.log.info(`Successful update of ${c.name} to ${c.value} on ${affectedDevice.name}`);
+                  }
+                });
+              });
+              this.setOutputChannel = [];
             }
           }
         });

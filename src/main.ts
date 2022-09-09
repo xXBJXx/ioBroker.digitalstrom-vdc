@@ -144,51 +144,6 @@ class DigitalstromVdc extends utils.Adapter {
 
         vdc.on('VDSM_NOTIFICATION_SET_CONTROL_VALUE', (msg: any) => {
             this.log.info(`received control value ${JSON.stringify(msg)}`);
-            if (msg && msg.name) {
-                if (msg && msg.dSUID) {
-                    msg.dSUID.forEach((id: string) => {
-                        const affectedDevice = this.allDevices.backEnd.find(
-                            (d: any) => d.dsConfig.dSUID.toLowerCase() == id.toLowerCase(),
-                        );
-                        if (affectedDevice) {
-                            // found the device -> it's an update for the device
-                            if (affectedDevice.deviceType == 'rgbLamp') {
-                                // it's an update for a rgb lamp
-                                if (msg.channelId == 'x' || msg.channelId == 'y') {
-                                    // we have an CIE situation here
-                                } else {
-                                    const affectedState = affectedDevice.watchStateID[msg.channelId];
-                                    if (affectedState) {
-                                        this.log.info(
-                                            `Received an update for state ${affectedState} in device ${affectedDevice.name} with value ${msg.value}`,
-                                        );
-                                        this.setForeignStateAsync(affectedState, {
-                                            val: msg.value,
-                                            ack: false,
-                                        }).then((error) => {
-                                            this.log.info(`set ${affectedState} ${error}`);
-                                        });
-                                    }
-                                }
-                            }
-                        } else if (msg.name === 'TemperatureOutside') {
-                            this.setStateAsync('DS-Devices.outdoorValues.temperature', {
-                                val: msg.value,
-                                ack: true,
-                            }).then((error) => {
-                                this.log.info(`set temperature ${error}`);
-                            });
-                        } else if (msg.name === 'BrightnessOutside') {
-                            this.setStateAsync('DS-Devices.outdoorValues.brightness', {
-                                val: msg.value,
-                                ack: true,
-                            }).then((error) => {
-                                this.log.info(`set brightness ${error}`);
-                            });
-                        }
-                    });
-                }
-            }
         });
 
         vdc.on('VDSM_NOTIFICATION_SET_OUTPUT_CHANNEL_VALUE', (msg: any) => {
@@ -201,172 +156,60 @@ class DigitalstromVdc extends utils.Adapter {
                     );
                     if (affectedDevice) {
                         // found the device -> it's an update for the device
-                        if (affectedDevice.deviceType == 'rgbLamp') {
-                            // it's an update for a rgb lamp
-                            if (msg.channelId == 'x' || msg.channelId == 'y') {
-                                // we have an CIE situation here
-                            } else {
-                                const affectedState = affectedDevice.watchStateID[msg.channelId];
-                                if (affectedState) {
-                                    this.log.info(
-                                        `Received an update for state ${affectedState} in device ${affectedDevice.name} with value ${msg.value} and ${msg.applyNow}`,
-                                    );
-                                    this.setOutputChannel.push({
-                                        name: msg.channelId,
-                                        state: affectedState,
-                                        value: msg.value,
-                                    });
-                                    if (msg.applyNow) {
+                        const affectedState = affectedDevice.watchStateID[msg.channelId];
+                        if (affectedState) {
+                            this.log.info(
+                                `Received an update for state ${affectedState} in device ${affectedDevice.name} with value ${msg.value} and ${msg.applyNow}`,
+                            );
+                            this.setOutputChannel.push({
+                                name: msg.channelId,
+                                state: affectedState,
+                                value: msg.value,
+                            });
+                            /*if (msg.applyNow) {
                                         this.setOutputChannel.push({
                                             name: msg.channelId,
                                             state: affectedState,
                                             value: msg.value,
-                                        });
+                                        });*/
 
-                                        const sat = this.setOutputChannel.find((v) => v.name == 'saturation');
-                                        const hue = this.setOutputChannel.find((v) => v.name == 'hue');
-                                        const brightness = this.setOutputChannel.find((v) => v.name == 'brightness');
-                                        const colortemp = this.setOutputChannel.find((v) => v.name == 'colortemp');
+                            //const sat = this.setOutputChannel.find((v) => v.name == 'saturation');
+                            //const hue = this.setOutputChannel.find((v) => v.name == 'hue');
+                            const brightness = this.setOutputChannel.find((v) => v.name == 'brightness');
+                            //const colortemp = this.setOutputChannel.find((v) => v.name == 'colortemp');
 
-                                        if (sat && hue && brightness) {
-                                            // all values exist -> let's perform some magic
-                                            this.log.debug(
-                                                `Hue: ${hue.value} Saturation: ${sat.value} Brightness: ${brightness.value}`,
-                                            );
-                                            const rgb = rgbhelper.hsvTOrgb(hue.value, sat.value, brightness.value);
-                                            const rgbHex = rgbhelper.rgbTOhex(rgb);
-
-                                            this.setForeignStateAsync(affectedDevice.watchStateID['rgb'], {
-                                                val: rgbHex,
-                                                ack: false,
-                                            }).then((error) => {
-                                                if (error) {
-                                                    /* this.log.error(
-                                                        `Error performing update of the RGB value (${rgb} / ${rgbHex}) on ${affectedDevice.name} `,
-                                                    ); */
-                                                } else {
-                                                    this.log.info(
-                                                        `Successful update of RGB to ${rgb} / ${rgbHex} on ${affectedDevice.name}`,
-                                                    );
-                                                }
-                                            });
-
-                                            this.setOutputChannel.forEach((c) => {
-                                                this.setForeignStateAsync(c.state, {
-                                                    val: c.value,
-                                                    ack: false,
-                                                }).then((error) => {
-                                                    if (error) {
-                                                        /* this.log.error(
-                                                            `Error performing update of the ${c.name} value (${c.value}) on ${affectedDevice.name} - ${error} `,
-                                                        ); */
-                                                    } else {
-                                                        this.log.info(
-                                                            `Successful update of ${c.name} to ${c.value} on ${affectedDevice.name}`,
-                                                        );
-                                                    }
-                                                });
-                                            });
-
-                                            this.setForeignStateAsync(affectedDevice.watchStateID.switchModeColor, {
-                                                val: true,
-                                                ack: false,
-                                            }).then((error) => {
-                                                if (error) {
-                                                    /* this.log.error(
-                                                        `Error performing update of the colorMode on ${affectedDevice.name} - ${error}`,
-                                                    ); */
-                                                } else {
-                                                    this.log.info(
-                                                        `Successful update of colorMode to false on ${affectedDevice.name}`,
-                                                    );
-                                                }
-                                            });
-                                        } else if (brightness) {
-                                            // only brightness is set -> lets update it
-                                            this.log.debug(`Brightness: ${brightness.value}`);
-
-                                            // turn off / on depending on the brightness
-                                            if (brightness.value == 0) {
-                                                const affectedStateSwitch = affectedDevice.watchStateID['switch'];
-                                                this.setOutputChannel.push({
-                                                    name: 'switch',
-                                                    state: affectedStateSwitch,
-                                                    value: false,
-                                                });
-                                            } else {
-                                                const affectedStateSwitch = affectedDevice.watchStateID['switch'];
-                                                this.setOutputChannel.push({
-                                                    name: 'switch',
-                                                    state: affectedStateSwitch,
-                                                    value: true,
-                                                });
-                                            }
-                                            this.setOutputChannel.forEach((c) => {
-                                                this.setForeignStateAsync(c.state, {
-                                                    val: c.value,
-                                                    ack: false,
-                                                }).then((error) => {
-                                                    if (error) {
-                                                        /* this.log.error(
-                                                            `Error performing update of the ${c.name} value (${c.value}) on ${affectedDevice.name} - ${error}`,
-                                                        ); */
-                                                    } else {
-                                                        this.log.info(
-                                                            `Successful update of ${c.name} to ${c.value} on ${affectedDevice.name}`,
-                                                        );
-                                                    }
-                                                });
-                                            });
-                                        } else if (colortemp) {
-                                            // only colortemp is set -> lets update it and switch color-mode
-                                            this.log.debug(`Colortemp: ${colortemp.value}`);
-                                            const kelvinValue = Math.floor(1000000 / colortemp.value);
-
-                                            this.setForeignStateAsync(affectedDevice.watchStateID.colortemp, {
-                                                val: kelvinValue,
-                                                ack: false,
-                                            }).then((error) => {
-                                                if (error) {
-                                                    /* this.log.error(
-                                                        `Error performing update of the colortemp value (${kelvinValue}) on ${affectedDevice.name} - ${error}`,
-                                                    ); */
-                                                } else {
-                                                    this.log.info(
-                                                        `Successful update of colortemp to ${kelvinValue} on ${affectedDevice.name}`,
-                                                    );
-                                                }
-                                            });
-
-                                            this.setForeignStateAsync(affectedDevice.watchStateID.switchModeColor, {
-                                                val: false,
-                                                ack: false,
-                                            }).then((error) => {
-                                                if (error) {
-                                                    /* this.log.error(
-                                                        `Error performing update of the colorMode on ${affectedDevice.name} - ${error}`,
-                                                    ); */
-                                                } else {
-                                                    this.log.info(
-                                                        `Successful update of colorMode to false on ${affectedDevice.name}`,
-                                                    );
-                                                }
-                                            });
-                                        } else {
-                                            this.log.error(
-                                                `Could not set the color on ${
-                                                    affectedDevice.name
-                                                } because some values where missing inside the buffer ${JSON.stringify(
-                                                    this.setOutputChannel,
-                                                )}`,
-                                            );
-                                        }
-
-                                        // reset buffer again
-                                        this.setOutputChannel = [];
-                                    }
+                            if (brightness) {
+                                this.log.debug(`Brightness: ${brightness.value}`);
+                                if (brightness.value == 0) {
+                                    const affectedStateSwitch = affectedDevice.watchStateID['switch'];
+                                    this.setOutputChannel.push({
+                                        name: 'switch',
+                                        state: affectedStateSwitch,
+                                        value: false,
+                                    });
+                                } else {
                                 }
                             }
+
+                            this.setOutputChannel.forEach((c) => {
+                                this.setForeignStateAsync(c.state, {
+                                    val: c.value,
+                                    ack: false,
+                                }).then((error) => {
+                                    if (error) {
+                                        /* this.log.error(
+                                                            `Error performing update of the ${c.name} value (${c.value}) on ${affectedDevice.name} - ${error} `,
+                                                        ); */
+                                    } else {
+                                        this.log.info(
+                                            `Successful update of ${c.name} to ${c.value} on ${affectedDevice.name}`,
+                                        );
+                                    }
+                                });
+                            });
+
+                            // reset buffer again
+                            this.setOutputChannel = [];
                         }
                     }
                 });
