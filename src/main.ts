@@ -9,7 +9,7 @@ import * as utils from '@iobroker/adapter-core';
 // Load your modules here, e.g.:
 // import * as fs from "fs";
 import { libdsvdc } from 'libdsvdcts';
-import { rgbhelper } from 'rgbhelper';
+//import { rgbhelper } from 'rgbhelper';
 
 let dsDevices: Array<any> = [];
 
@@ -444,141 +444,39 @@ class DigitalstromVdc extends utils.Adapter {
         });
 
         vdc.on('channelStatesRequest', async (msg: any) => {
-            this.log.debug(`received request for status ${JSON.stringify(msg)}`);
-
+            this.log.debug(`received request for channel status ${JSON.stringify(msg)}`);
             // search if the dsUID is known
-            if (msg && msg.dSUID) {
-                const affectedDevice = this.allDevices.backEnd.find(
-                    (d: any) => d.dsConfig.dSUID.toLowerCase() == msg.dSUID.toLowerCase(),
-                );
-                this.log.debug('FOUND DEVICE: ' + JSON.stringify(affectedDevice));
-                if (affectedDevice && affectedDevice.deviceType == 'lamp') {
-                    const state: any = await this.getForeignStateAsync(affectedDevice.watchStateID.light);
-                    // const state: any = await getFState(affectedDevice.watchStateID);
-                    this.log.info('msg value from state: ' + JSON.stringify(state));
-                    msg.value = state.val ? 100 : 0;
-                    this.log.info('msg value from state: ' + msg.value);
-                    vdc.sendState(msg.value, msg.messageId);
-                } else if (affectedDevice && affectedDevice.deviceType == 'rgbLamp') {
-                    //TODO: Wouldn't a 'for of' loop be better here? WebStorm thinks so! Greeting Issi
-                    msg.names.forEach(async (e: any) => {
-                        this.log.debug(`searching state on ${affectedDevice.name} for state ${e}`);
-                        let affectedState = affectedDevice.watchStateID[e];
-                        if (affectedState) {
-                            // this does not match rgb, since that is split in x & y
-                            this.log.debug(
-                                `Received request for status for device  ${affectedDevice.name} and state ${affectedState}`,
-                            );
-                            const state: any = await this.getForeignStateAsync(affectedState);
-                            this.log.debug('msg value from state: ' + JSON.stringify(state));
-                            const subElement = {
-                                name: e,
-                                elements: [{ name: 'value', value: { vDouble: state.val } }],
-                            };
-                            vdc.sendComplexState(msg.messageId, subElement);
-                        } else if (e == 'x' || e == 'y') {
-                            // special handling for x & y
-                            // get rgbstate
-                            affectedState = affectedDevice.watchStateID['rgb'];
-                            if (affectedState) {
-                                this.log.debug(`getting rgb value from ${affectedState}`);
-                                const state: any = await this.getForeignStateAsync(affectedState);
-                                this.log.debug(`got a state for rgb: ${JSON.stringify(state)}`);
-                                if (state) {
-                                    if (state.val.indexOf('#') == 0) {
-                                        state.val = state.val.substring(1);
-                                    } else {
-                                        // TODO yeelight adapter has a bug and stores the rgb value in dec instead of hex -> we need to convert it to hex first
-                                        state.val = parseInt(state.val).toString(16);
-                                    }
-                                    const rgb = rgbhelper.hexToRgb(state.val);
-                                    this.log.debug(
-                                        `did some math and got me some rgb from ${state.val} to ${JSON.stringify(rgb)}`,
-                                    );
-                                    if (rgb) {
-                                        const cie = rgbhelper.rgb_to_cie(rgb.r, rgb.g, rgb.b);
-                                        this.log.debug(
-                                            `did some more math and found me some CIE values from ${JSON.stringify(
-                                                rgb,
-                                            )} to ${cie}`,
-                                        );
-                                        let subElement = {};
-                                        switch (e) {
-                                            case 'x':
-                                                subElement = {
-                                                    name: 'x',
-                                                    elements: [{ name: 'value', value: { vDouble: cie[0] } }],
-                                                };
-                                                vdc.sendComplexState(msg.messageId, subElement);
-                                                break;
-                                            case 'y':
-                                                subElement = {
-                                                    name: 'y',
-                                                    elements: [{ name: 'value', value: { vDouble: cie[1] } }],
-                                                };
-                                                vdc.sendComplexState(msg.messageId, subElement);
-                                                break;
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            this.log.error(`The device ${affectedDevice.name} has no watchState for ${e}`);
-                        }
-                    });
-                } else if (affectedDevice && affectedDevice.deviceType == 'multiSensor') {
-                    const elements: Array<any> = [];
-                    for (const [key, value] of Object.entries(affectedDevice.watchStateID)) {
-                        const subState = await this.getForeignStateAsync(value as string);
-                        if (subState) {
-                            elements.push({
-                                name: key as string,
-                                elements: [
-                                    { name: 'age', value: { vDouble: 1 } },
-                                    { name: 'error', value: { vUint64: '0' } },
-                                    { name: 'value', value: { vDouble: subState.val } },
-                                ],
-                            });
-                        }
-                    }
-                    this.log.debug('Sending complex state ' + JSON.stringify(elements));
-                    vdc.sendComplexState(msg.messageId, elements);
-                } else if (affectedDevice && affectedDevice.deviceType == 'sensor') {
-                    const elements: Array<any> = [];
-                    for (const [key, value] of Object.entries(affectedDevice.watchStateID)) {
-                        const subState = await this.getForeignStateAsync(value as string);
-                        if (subState) {
-                            elements.push({
-                                name: key as string,
-                                elements: [
-                                    { name: 'age', value: { vDouble: 1 } },
-                                    { name: 'error', value: { vUint64: '0' } },
-                                    { name: 'value', value: { vDouble: subState.val } },
-                                ],
-                            });
-                        }
-                    }
-                    vdc.sendComplexState(msg.messageId, elements);
-                } else if (affectedDevice && affectedDevice.deviceType == 'presenceSensor') {
-                    const elements: Array<any> = [];
-                    for (const [key, value] of Object.entries(affectedDevice.watchStateID)) {
-                        const subState = await this.getForeignStateAsync(value as string);
-                        if (subState) {
-                            elements.push({
-                                name: key as string,
-                                elements: [
-                                    { name: 'age', value: { vDouble: 1 } },
-                                    { name: 'error', value: { vUint64: '0' } },
-                                    { name: 'value', value: { vBool: subState.val } },
-                                ],
-                            });
-                        }
-                    }
-                    vdc.sendComplexState(msg.messageId, elements);
+            if (!(msg && msg.dSUID)) {
+                return;
+            }
+            const affectedDevice = this.allDevices.backEnd.find(
+                (d: any) => d.dsConfig.dSUID.toLowerCase() == msg.dSUID.toLowerCase(),
+            );
+            this.log.debug('FOUND DEVICE: ' + JSON.stringify(affectedDevice));
+            for (const e of msg.names) {
+                this.log.debug(`searching state on ${affectedDevice.name} for state ${e}`);
+                const affectedState = affectedDevice.watchStateID[e];
+                if (affectedState) {
+                    this.log.debug(
+                        `Received request for status for device  ${affectedDevice.name} and state ${affectedState}`,
+                    );
+                    const state: any = await this.getForeignStateAsync(affectedState);
+                    this.log.debug('msg value from state: ' + JSON.stringify(state));
+                    const subElement = {
+                        name: e,
+                        elements: [
+                            { name: 'value', value: { vDouble: state.val } },
+                            { name: 'age', value: { vDouble: 1 } },
+                        ],
+                    };
+                    vdc.sendComplexState(msg.messageId, subElement);
                 } else {
-                    // send generic response
-                    vdc.sendState(msg.value, msg.messageId);
+                    this.log.error(`The device ${affectedDevice.name} has no watchState for ${e}`);
                 }
+            }
+            {
+                // send generic response
+                vdc.sendState(msg.value, msg.messageId);
             }
         });
 
