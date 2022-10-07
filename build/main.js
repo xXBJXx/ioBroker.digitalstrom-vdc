@@ -96,39 +96,46 @@ class DigitalstromVdc extends utils.Adapter {
           const affectedDevice = this.allDevices.backEnd.find((d) => d.dsConfig.dSUID.toLowerCase() == id.toLowerCase());
           if (affectedDevice) {
             const affectedState = affectedDevice.watchStateID[msg.channelId];
-            if (affectedState) {
-              this.log.info(`Received an update for state ${affectedState} in device ${affectedDevice.name} with value ${msg.value} and ${msg.applyNow}`);
-              this.setOutputChannel.push({
-                name: msg.channelId,
-                state: affectedState,
-                value: msg.value
-              });
-              const brightness = this.setOutputChannel.find((v) => v.name == "brightness");
-              if (brightness) {
-                this.log.debug(`Brightness: ${brightness.value}`);
-                if (brightness.value == 0) {
-                  const affectedStateSwitch = affectedDevice.watchStateID["switch"];
-                  this.setOutputChannel.push({
-                    name: "switch",
-                    state: affectedStateSwitch,
-                    value: false
-                  });
-                } else {
-                }
-              }
-              this.setOutputChannel.forEach((c) => {
-                this.setForeignStateAsync(c.state, {
-                  val: c.value,
-                  ack: false
-                }).then((error) => {
-                  if (error) {
-                  } else {
-                    this.log.info(`Successful update of ${c.name} to ${c.value} on ${affectedDevice.name}`);
-                  }
-                });
-              });
-              this.setOutputChannel = [];
+            if (!affectedState) {
+              return;
             }
+            this.log.info(`Received an update for state ${affectedState} in device ${affectedDevice.name} with value ${msg.value} and ${msg.applyNow}`);
+            this.setOutputChannel.push({
+              name: msg.channelId,
+              state: affectedState,
+              value: msg.value
+            });
+            const brightness = this.setOutputChannel.find((v) => v.name == "brightness");
+            if (brightness) {
+              this.log.debug(`Brightness: ${brightness.value}`);
+              if (brightness.value == 0) {
+                const affectedStateSwitch = affectedDevice.watchStateID["switch"];
+                this.setOutputChannel.push({
+                  name: "switch",
+                  state: affectedStateSwitch,
+                  value: false
+                });
+              }
+            } else {
+              const affectedStateSwitch = affectedDevice.watchStateID["switch"];
+              this.setOutputChannel.push({
+                name: "switch",
+                state: affectedStateSwitch,
+                value: true
+              });
+            }
+            this.setOutputChannel.forEach((c) => {
+              this.setForeignStateAsync(c.state, {
+                val: c.value,
+                ack: false
+              }).then((error) => {
+                if (error) {
+                } else {
+                  this.log.info(`Successful update of ${c.name} to ${c.value} on ${affectedDevice.name}`);
+                }
+              });
+            });
+            this.setOutputChannel = [];
           }
         });
       }
