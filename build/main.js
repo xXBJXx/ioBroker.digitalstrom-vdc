@@ -87,10 +87,10 @@ class DigitalstromVdc extends utils.Adapter {
       this.log.debug(`MSG SENT" ${JSON.stringify(msg)}`);
     });
     vdc.on("VDSM_NOTIFICATION_SET_CONTROL_VALUE", (msg) => {
-      this.log.info(`received control value ${JSON.stringify(msg)}`);
+      this.log.debug(`received control value ${JSON.stringify(msg)}`);
     });
     vdc.on("VDSM_NOTIFICATION_SET_OUTPUT_CHANNEL_VALUE", (msg) => {
-      this.log.info(`received OUTPUTCHANNELVALUE value ${JSON.stringify(msg)}`);
+      this.log.debug(`received OUTPUTCHANNELVALUE value ${JSON.stringify(msg)}`);
       if (msg && msg.dSUID) {
         msg.dSUID.forEach((id) => {
           const affectedDevice = this.allDevices.backEnd.find((d) => d.dsConfig.dSUID.toLowerCase() == id.toLowerCase());
@@ -99,7 +99,7 @@ class DigitalstromVdc extends utils.Adapter {
             if (!affectedState) {
               return;
             }
-            this.log.info(`Received an update for state ${affectedState} in device ${affectedDevice.name} with value ${msg.value} and ${msg.applyNow}`);
+            this.log.debug(`Received an update for state ${affectedState} in device ${affectedDevice.name} with value ${msg.value} and ${msg.applyNow}`);
             this.setOutputChannel.push({
               name: msg.channelId,
               state: affectedState,
@@ -131,7 +131,7 @@ class DigitalstromVdc extends utils.Adapter {
               }).then((error) => {
                 if (error) {
                 } else {
-                  this.log.info(`Successful update of ${c.name} to ${c.value} on ${affectedDevice.name}`);
+                  this.log.debug(`Successful update of ${c.name} to ${c.value} on ${affectedDevice.name}`);
                 }
               });
             });
@@ -141,7 +141,7 @@ class DigitalstromVdc extends utils.Adapter {
       }
     });
     vdc.on("VDSM_NOTIFICATION_SAVE_SCENE", (msg) => {
-      this.log.info(`received save scene event ${JSON.stringify(msg)}`);
+      this.log.debug(`received save scene event ${JSON.stringify(msg)}`);
       if (msg && msg.dSUID) {
         msg.dSUID.forEach(async (id) => {
           const affectedDevice = this.allDevices.backEnd.find((d) => d.dsConfig.dSUID.toLowerCase() == id.toLowerCase());
@@ -226,7 +226,7 @@ class DigitalstromVdc extends utils.Adapter {
       }
     });
     vdc.on("VDSM_NOTIFICATION_CALL_SCENE", (msg) => {
-      this.log.info(`received call scene event ${JSON.stringify(msg)}`);
+      this.log.debug(`received call scene event ${JSON.stringify(msg)}`);
       if (msg && msg.dSUID) {
         msg.dSUID.forEach((id) => {
           const affectedDevice = this.allDevices.backEnd.find((d) => d.dsConfig.dSUID.toLowerCase() == id.toLowerCase());
@@ -328,7 +328,7 @@ class DigitalstromVdc extends utils.Adapter {
       }
     });
     vdc.on("binaryInputStateRequest", async (msg) => {
-      this.log.info(`received request for binaryInputStateRequest ${JSON.stringify(msg)}`);
+      this.log.debug(`received request for binaryInputStateRequest ${JSON.stringify(msg)}`);
       if (msg && msg.dSUID) {
         const affectedDevice = this.allDevices.backEnd.find((d) => d.dsConfig.dSUID.toLowerCase() == msg.dSUID.toLowerCase());
         this.log.debug(`found device ${JSON.stringify(affectedDevice)}`);
@@ -364,7 +364,7 @@ class DigitalstromVdc extends utils.Adapter {
       }
     });
     vdc.on("binaryInputStateRequest", async (msg) => {
-      this.log.info(`received request for binaryInputStateRequest ${JSON.stringify(msg)}`);
+      this.log.debug(`received request for binaryInputStateRequest ${JSON.stringify(msg)}`);
       if (msg && msg.dSUID) {
         const affectedDevice = this.allDevices.backEnd.find((d) => d.dsConfig.dSUID.toLowerCase() == msg.dSUID.toLowerCase());
         this.log.debug(`found device ${JSON.stringify(affectedDevice)}`);
@@ -403,7 +403,7 @@ class DigitalstromVdc extends utils.Adapter {
             const sensorStates = [];
             for (const [key, value] of Object.entries(affectedDevice.watchStateID)) {
               const state = await this.getForeignStateAsync(value);
-              this.log.info("msg value from state: " + JSON.stringify(state));
+              this.log.debug("msg value from state: " + JSON.stringify(state));
               if (affectedDevice.modifiers && typeof affectedDevice.modifiers == "object" && key && affectedDevice.modifiers[key]) {
                 state.val = state.val * parseFloat(affectedDevice.modifiers[key]);
               }
@@ -416,7 +416,7 @@ class DigitalstromVdc extends utils.Adapter {
             vdc.sendSensorStatesRequest(sensorStates, msg.messageId);
           } else {
             const state = await this.getForeignStateAsync(affectedDevice.watchStateID);
-            this.log.info("msg value from state: " + JSON.stringify(state));
+            this.log.debug("msg value from state: " + JSON.stringify(state));
             const sensorStates = [];
             affectedDevice.dsConfig.sensorDescriptions.forEach((i) => {
               if (affectedDevice.modifiers && typeof affectedDevice.modifiers == "object" && i.objName && affectedDevice.modifiers[i.objName]) {
@@ -434,7 +434,7 @@ class DigitalstromVdc extends utils.Adapter {
           const sensorStates = [];
           for (const [key, value] of Object.entries(affectedDevice.watchStateID)) {
             const state = await this.getForeignStateAsync(value);
-            this.log.info("msg value from state: " + JSON.stringify(state));
+            this.log.debug("msg value from state: " + JSON.stringify(state));
             if (affectedDevice.modifiers && typeof affectedDevice.modifiers == "object" && key && affectedDevice.modifiers[key]) {
               state.val = state.val * parseFloat(affectedDevice.modifiers[key]);
             }
@@ -451,13 +451,13 @@ class DigitalstromVdc extends utils.Adapter {
     });
     vdc.on("vdcRunningState", () => {
       this.setStateAsync("DS-Devices.VDC.running", { val: true, ack: true });
-      this.log.info(`VDC <${this.config.vdcName}> is running on port ${this.config.vdcPort}`);
+      this.log.debug(`VDC <${this.config.vdcName}> is running on port ${this.config.vdcPort}`);
     });
     vdc.on("deviceZoneChange", (msg) => {
-      this.log.info(`deviceZoneChange event received with the following information ${JSON.stringify(msg)}`);
+      this.log.debug(`deviceZoneChange event received with the following information ${JSON.stringify(msg)}`);
     });
     vdc.on("updateDeviceValues", async (msg) => {
-      this.log.info(`deviceUpdate received with the following information ${JSON.stringify(msg)}`);
+      this.log.debug(`deviceUpdate received with the following information ${JSON.stringify(msg)}`);
       const affectedDevice = this.allDevices.backEnd.find((d) => d.dsConfig.dSUID.toLowerCase() == msg.dSUID.toLowerCase());
       if (affectedDevice) {
         affectedDevice.dsConfig = msg;
@@ -519,9 +519,9 @@ class DigitalstromVdc extends utils.Adapter {
   }
   onObjectChange(id, obj) {
     if (obj) {
-      this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
+      this.log.debug(`object ${id} changed: ${JSON.stringify(obj)}`);
     } else {
-      this.log.info(`object ${id} deleted`);
+      this.log.debug(`object ${id} deleted`);
     }
   }
   async replyMultiSensor(affectedDevice) {
@@ -548,7 +548,6 @@ class DigitalstromVdc extends utils.Adapter {
   }
   onStateChange(id, state) {
     if (state) {
-      this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
       const affectedDevice = this.allDevices.backEnd.find((d) => d.watchStateID == id || Object.values(d.watchStateID).indexOf(id) > -1);
       if (affectedDevice && typeof affectedDevice.watchStateID == "object") {
         const updateName = Object.keys(affectedDevice.watchStateID).find((key) => affectedDevice.watchStateID[key] === id);
@@ -718,7 +717,7 @@ class DigitalstromVdc extends utils.Adapter {
         }
       }
     } else {
-      this.log.info(`state ${id} deleted`);
+      this.log.debug(`state ${id} deleted`);
     }
   }
   async onMessage(obj) {
@@ -767,7 +766,7 @@ class DigitalstromVdc extends utils.Adapter {
           }
         }
         case "VanishDevice": {
-          this.log.info(`sendVanishDevice command receveid for device ${obj.message}`);
+          this.log.debug(`sendVanishDevice command receveid for device ${obj.message}`);
           break;
         }
         case "ListDevices": {
