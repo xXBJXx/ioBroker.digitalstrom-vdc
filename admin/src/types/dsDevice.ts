@@ -49,6 +49,7 @@ export type dsConfig = {
     binaryInputSettings?: [binaryInputSetting];
     buttonInputDescriptions?: [buttonInputDescription];
     buttonInputSettings?: [buttonInputSetting];
+    scenes?: [scenes];
 };
 
 /**
@@ -459,3 +460,35 @@ export type sensorSetting = {
  * 9: whiteColor
  */
 export type colorGroup = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+
+/**
+ */
+export type scenes = {
+    sceneId: number;
+    values: {
+        brightness: {
+            value: number;
+            dontCare: boolean;
+        };
+        hue: {
+            value: number;
+            dontCare: boolean;
+        };
+        saturation: {
+            value: number;
+            dontCare: boolean;
+        };
+        colortemp: {
+            value: string;
+            dontCare: boolean;
+        };
+        x: {
+            value: string;
+            dontCare: boolean;
+        };
+        y: {
+            value: string;
+            dontCare: boolean;
+        };
+    };
+};

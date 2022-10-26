@@ -146,81 +146,36 @@ class DigitalstromVdc extends utils.Adapter {
         msg.dSUID.forEach(async (id) => {
           const affectedDevice = this.allDevices.backEnd.find((d) => d.dsConfig.dSUID.toLowerCase() == id.toLowerCase());
           if (affectedDevice) {
-            if (affectedDevice.deviceType == "rgbLamp") {
-              let key;
-              let value;
-              const sceneVals = {};
-              const SMC = await this.getForeignStateAsync(affectedDevice.watchStateID.switchModeColor);
-              for ([key, value] of Object.entries(affectedDevice.watchStateID)) {
-                const state = await this.getForeignStateAsync(value);
-                if (!affectedDevice.scenes) {
-                  affectedDevice.scenes = [];
-                }
-                let dC = false;
-                switch (key) {
-                  case "colorTemp":
-                    dC = SMC.val ? true : false;
-                    break;
-                  case "hue":
-                    dC = SMC.val ? false : true;
-                    break;
-                  case "saturation":
-                    dC = SMC.val ? false : true;
-                    break;
-                }
-                sceneVals[key] = { value: state.val, dontCare: dC };
+            let key;
+            let value;
+            const sceneVals = {};
+            for ([key, value] of Object.entries(affectedDevice.watchStateID)) {
+              const state = await this.getForeignStateAsync(value);
+              if (!affectedDevice.scenes) {
+                affectedDevice.scenes = [];
               }
-              affectedDevice.scenes = affectedDevice.scenes.filter((d) => d.sceneId != msg.scene);
-              affectedDevice.scenes.push({ sceneId: msg.scene, values: sceneVals });
-              this.log.debug(`Set scene ${msg.scene} on ${affectedDevice.name} ::: ${JSON.stringify(this.allDevices.backEnd)}`);
-              await this.setObjectAsync(`digitalstrom-vdc.0.DS-Devices.configuredDevices.${affectedDevice.id}`, {
-                type: "state",
-                common: {
-                  name: affectedDevice.name,
-                  type: "boolean",
-                  role: "indicator",
-                  read: true,
-                  write: true
-                },
-                native: {
-                  deviceObj: affectedDevice
-                }
-              }).then(async (success) => {
-                this.log.debug(`Device created ${success}`);
-                this.allDevices = await this.refreshDeviceList();
-              });
-            } else if (affectedDevice.deviceType == "lamp") {
-              let key;
-              let value;
-              const sceneVals = {};
-              for ([key, value] of Object.entries(affectedDevice.watchStateID)) {
-                const state = await this.getForeignStateAsync(value);
-                if (!affectedDevice.scenes) {
-                  affectedDevice.scenes = [];
-                }
-                const dC = false;
-                sceneVals[key] = { value: state.val, dontCare: dC };
-              }
-              affectedDevice.scenes = affectedDevice.scenes.filter((d) => d.sceneId != msg.scene);
-              affectedDevice.scenes.push({ sceneId: msg.scene, values: sceneVals });
-              this.log.debug(`Set scene ${msg.scene} on ${affectedDevice.name} ::: ${JSON.stringify(this.allDevices.backEnd)}`);
-              await this.setObjectAsync(`digitalstrom-vdc.0.DS-Devices.configuredDevices.${affectedDevice.id}`, {
-                type: "state",
-                common: {
-                  name: affectedDevice.name,
-                  type: "boolean",
-                  role: "indicator",
-                  read: true,
-                  write: true
-                },
-                native: {
-                  deviceObj: affectedDevice
-                }
-              }).then(async (success) => {
-                this.log.debug(`Device created ${success}`);
-                this.allDevices = await this.refreshDeviceList();
-              });
+              const dC = false;
+              sceneVals[key] = { value: state.val, dontCare: dC };
             }
+            affectedDevice.scenes = affectedDevice.scenes.filter((d) => d.sceneId != msg.scene);
+            affectedDevice.scenes.push({ sceneId: msg.scene, values: sceneVals });
+            this.log.debug(`Set scene ${msg.scene} on ${affectedDevice.name} ::: ${JSON.stringify(this.allDevices.backEnd)}`);
+            await this.setObjectAsync(`digitalstrom-vdc.0.DS-Devices.configuredDevices.${affectedDevice.id}`, {
+              type: "state",
+              common: {
+                name: affectedDevice.name,
+                type: "boolean",
+                role: "indicator",
+                read: true,
+                write: true
+              },
+              native: {
+                deviceObj: affectedDevice
+              }
+            }).then(async (success) => {
+              this.log.debug(`Device created ${success}`);
+              this.allDevices = await this.refreshDeviceList();
+            });
           }
         });
       }
@@ -230,68 +185,18 @@ class DigitalstromVdc extends utils.Adapter {
       if (msg && msg.dSUID) {
         msg.dSUID.forEach((id) => {
           const affectedDevice = this.allDevices.backEnd.find((d) => d.dsConfig.dSUID.toLowerCase() == id.toLowerCase());
-          if (affectedDevice) {
-            if (affectedDevice.deviceType == "lamp") {
-              switch (msg.scene) {
-                case 5:
-                  this.setForeignState(affectedDevice.watchStateID.light, true, false);
-                  break;
-                case 14:
-                  this.setForeignState(affectedDevice.watchStateID.light, true, false);
-                  break;
-                case 13:
-                  this.setForeignState(affectedDevice.watchStateID.light, false);
-                  break;
-                case 69:
-                  this.setForeignState(affectedDevice.watchStateID.light, false);
-                  break;
-                case 72:
-                  this.setForeignState(affectedDevice.watchStateID.light, false);
-                  break;
-                case 0:
-                  this.setForeignState(affectedDevice.watchStateID.light, false);
-                  break;
-                default:
-                  const dScene = affectedDevice.scenes.find((s) => {
-                    return s.sceneId == msg.scene;
-                  });
-                  if (dScene) {
-                    let key;
-                    let value;
-                    this.log.debug(`looping the values inside scene ${msg.scene} -> ${JSON.stringify(dScene)}`);
-                    for ([key, value] of Object.entries(dScene.values)) {
-                      this.log.debug(`performing update on state: ${key} ${JSON.stringify(affectedDevice.watchStateID)} with key ${key} value ${value.value}`);
-                      this.log.debug(`setting ${value.value} of ${affectedDevice.name} to on ${affectedDevice.watchStateID[key]}`);
-                      this.setForeignState(affectedDevice.watchStateID[key], value.value);
-                    }
-                  }
-                  break;
-              }
-            } else if (affectedDevice.deviceType == "rgbLamp") {
-              this.log.debug(JSON.stringify(affectedDevice));
-              if (msg.scene == "13") {
-                this.setForeignState(affectedDevice.watchStateID.switch, false);
-              } else if (msg.scene == "0") {
-                this.setForeignState(affectedDevice.watchStateID.switch, false);
-              } else if (msg.scene == "72") {
-                this.setForeignState(affectedDevice.watchStateID.switch, false);
-              } else if (msg.scene == "69") {
-                this.setForeignState(affectedDevice.watchStateID.switch, false);
-              } else if (affectedDevice.scenes) {
-                const dScene = affectedDevice.scenes.find((s) => {
-                  return s.sceneId == msg.scene;
-                });
-                if (dScene) {
-                  let key;
-                  let value;
-                  this.log.debug(`looping the values inside scene ${msg.scene} -> ${JSON.stringify(dScene)}`);
-                  for ([key, value] of Object.entries(dScene.values)) {
-                    this.log.debug(`performing update on state: ${key} ${JSON.stringify(affectedDevice.watchStateID)} with key ${key} value ${value.value}`);
-                    this.log.debug(`setting ${value.value} of ${affectedDevice.name} to on ${affectedDevice.watchStateID[key]}`);
-                    this.setForeignState(affectedDevice.watchStateID[key], value.value);
-                  }
-                }
-              }
+          this.log.debug(JSON.stringify(affectedDevice));
+          const dScene = affectedDevice.scenes.find((s) => {
+            return s.sceneId == msg.scene;
+          });
+          if (dScene) {
+            let key;
+            let value;
+            this.log.debug(`looping the values inside scene ${msg.scene} -> ${JSON.stringify(dScene)}`);
+            for ([key, value] of Object.entries(dScene.values)) {
+              this.log.debug(`performing update on state: ${key} ${JSON.stringify(affectedDevice.watchStateID)} with key ${key} value ${value.value}`);
+              this.log.debug(`setting ${value.value} of ${affectedDevice.name} to on ${affectedDevice.watchStateID[key]}`);
+              this.setForeignState(affectedDevice.watchStateID[key], value.value);
             }
           }
         });
@@ -364,89 +269,27 @@ class DigitalstromVdc extends utils.Adapter {
       }
     });
     vdc.on("binaryInputStateRequest", async (msg) => {
-      this.log.debug(`received request for binaryInputStateRequest ${JSON.stringify(msg)}`);
+      this.log.info(`received request for binaryInputStateRequest ${JSON.stringify(msg)}`);
       if (msg && msg.dSUID) {
         const affectedDevice = this.allDevices.backEnd.find((d) => d.dsConfig.dSUID.toLowerCase() == msg.dSUID.toLowerCase());
         this.log.debug(`found device ${JSON.stringify(affectedDevice)}`);
-        if (affectedDevice && affectedDevice.deviceType == "binarySensor") {
-          const inputStates = [];
-          affectedDevice.dsConfig.binaryInputDescriptions.forEach((i) => {
-            inputStates.push({
-              name: i.objName,
-              age: 1,
-              value: null
-            });
-          });
-          vdc.sendBinaryInputState(inputStates, msg.messageId);
-        } else if (affectedDevice && affectedDevice.deviceType == "smokeAlarm") {
-          const inputStates = [];
-          affectedDevice.dsConfig.binaryInputDescriptions.forEach((i) => {
-            inputStates.push({
-              name: i.objName,
-              age: 1,
-              value: null
-            });
-          });
-          try {
-            vdc.sendBinaryInputState(inputStates, msg.messageId);
-          } catch (e) {
-            this.log.error(JSON.stringify(e));
-          }
-        }
-      }
-    });
-    vdc.on("sensorStatesRequest", async (msg) => {
-      if (msg && msg.dSUID) {
-        const affectedDevice = this.allDevices.backEnd.find((d) => d.dsConfig.dSUID.toLowerCase() == msg.dSUID.toLowerCase());
-        if (affectedDevice && affectedDevice.deviceType == "sensor") {
-          if (typeof affectedDevice.watchStateID == "object") {
-            const sensorStates = [];
-            for (const [key, value] of Object.entries(affectedDevice.watchStateID)) {
-              const state = await this.getForeignStateAsync(value);
-              this.log.debug("msg value from state: " + JSON.stringify(state));
-              if (affectedDevice.modifiers && typeof affectedDevice.modifiers == "object" && key && affectedDevice.modifiers[key]) {
-                state.val = state.val * parseFloat(affectedDevice.modifiers[key]);
-              }
-              sensorStates.push({
-                name: key,
-                age: 5,
-                value: state.val
-              });
-            }
-            vdc.sendSensorStatesRequest(sensorStates, msg.messageId);
-          } else {
-            const state = await this.getForeignStateAsync(affectedDevice.watchStateID);
-            this.log.debug("msg value from state: " + JSON.stringify(state));
-            const sensorStates = [];
-            affectedDevice.dsConfig.sensorDescriptions.forEach((i) => {
-              if (affectedDevice.modifiers && typeof affectedDevice.modifiers == "object" && i.objName && affectedDevice.modifiers[i.objName]) {
-                state.val = state.val * parseFloat(affectedDevice.modifiers[i.objName]);
-              }
-              sensorStates.push({
-                name: i.objName,
-                age: 5,
-                value: state.val
-              });
-            });
-            vdc.sendSensorStatesRequest(sensorStates, msg.messageId);
-          }
-        } else if (affectedDevice && affectedDevice.deviceType == "multiSensor") {
-          const sensorStates = [];
-          for (const [key, value] of Object.entries(affectedDevice.watchStateID)) {
-            const state = await this.getForeignStateAsync(value);
-            this.log.debug("msg value from state: " + JSON.stringify(state));
-            if (affectedDevice.modifiers && typeof affectedDevice.modifiers == "object" && key && affectedDevice.modifiers[key]) {
-              state.val = state.val * parseFloat(affectedDevice.modifiers[key]);
-            }
-            sensorStates.push({
+        const elements = [];
+        for (const [key, value] of Object.entries(affectedDevice.watchStateID)) {
+          const subState = await this.getForeignStateAsync(value);
+          if (subState) {
+            elements.push({
               name: key,
-              age: 1,
-              value: state.val
+              elements: [
+                { name: "age", value: { vDouble: 1 } },
+                { name: "error", value: { vUint64: "0" } },
+                { name: "value", value: { vBool: subState.val } }
+              ]
             });
           }
-          this.log.warn("MultiSensorStates" + JSON.stringify(sensorStates));
-          vdc.sendSensorStatesRequest(sensorStates, msg.messageId);
+          vdc.sendComplexState(msg.messageId, elements);
         }
+      } else {
+        vdc.sendState(msg.value, msg.messageId);
       }
     });
     vdc.on("vdcRunningState", () => {
