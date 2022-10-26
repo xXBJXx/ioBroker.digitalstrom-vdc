@@ -49,7 +49,7 @@ export type dsConfig = {
     binaryInputSettings?: [binaryInputSetting];
     buttonInputDescriptions?: [buttonInputDescription];
     buttonInputSettings?: [buttonInputSetting];
-    scenes?: [scenes];
+    scenes?: scenes[];
 };
 
 /**

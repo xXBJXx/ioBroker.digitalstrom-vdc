@@ -145,17 +145,30 @@ class DigitalstromVdc extends utils.Adapter {
       if (msg && msg.dSUID) {
         msg.dSUID.forEach(async (id) => {
           const affectedDevice = this.allDevices.backEnd.find((d) => d.dsConfig.dSUID.toLowerCase() == id.toLowerCase());
+          let dontCare;
           if (affectedDevice) {
+            const dScene = affectedDevice.scenes.find((s) => {
+              return s.sceneId == msg.scene;
+            });
+            if (dScene) {
+              let key2;
+              let value2;
+              this.log.debug(`looking for dontCare value inside scene ${msg.scene} -> ${JSON.stringify(dScene)}`);
+              for ([key2, value2] of Object.entries(dScene.values)) {
+                if (key2 == "dontCare")
+                  dontCare = value2;
+              }
+            } else
+              dontCare = false;
+            const sceneVals = {};
             let key;
             let value;
-            const sceneVals = {};
             for ([key, value] of Object.entries(affectedDevice.watchStateID)) {
               const state = await this.getForeignStateAsync(value);
               if (!affectedDevice.scenes) {
                 affectedDevice.scenes = [];
               }
-              const dC = false;
-              sceneVals[key] = { value: state.val, dontCare: dC };
+              sceneVals[key] = { value: state.val, dontCare };
             }
             affectedDevice.scenes = affectedDevice.scenes.filter((d) => d.sceneId != msg.scene);
             affectedDevice.scenes.push({ sceneId: msg.scene, values: sceneVals });
